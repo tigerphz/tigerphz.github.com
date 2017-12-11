@@ -286,6 +286,10 @@
 
           
   
+    <div class="comments" id="comments">
+      <div id="vcomments"></div>
+    </div>
+  
 
 
         </div>
@@ -534,6 +538,21 @@
 
 
 
+
+  
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine@1.1.4/dist/Valine.min.js"></script>
+  <script type="text/javascript">
+    new Valine({
+        av: AV,
+        el: '#vcomments' ,
+        verify: false,
+        notify: false,
+        app_id: 'gJllSjilgzBkDFiRdaeSDve8-gzGzoHsz',
+        app_key: '5zSPujjcFN7QMh8atnnnvMJP',
+        placeholder: 'Leave a comment'
+    });
+  </script>
 
 
 
