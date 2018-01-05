@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)https://www.cnblogs.com/x113773/p/7093171.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/bundle-Custom.css">
+<link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/bundle-Custom-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/x113773/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/x113773/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/x113773/wlwmanifest.xml">
+<script async="" src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/analytics.js"></script><script src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'x113773', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/blog-common.js" type="text/javascript"></script>
+<style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/x113773/"><img id="blogLogo" src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/x113773/">x113773</a></h1>
+<h2>https://github.com/x113773</h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/x113773/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/x113773">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/x113773/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/x113773/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 21&nbsp; </span>
+<span id="stats_article_count">文章 - 0&nbsp; </span>
+<span id="stats-comment_count">评论 - 17</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/x113773/p/7093171.html">springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter)</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><p>原文：<a href="https://github.com/x113773/testall/issues/11" target="_blank">https://github.com/x113773/testall/issues/11</a></p>
+<p>### Druid 最近发布了1.1.0 版本，并且提供了 [druid-spring-boot-starter](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter)，方便与Spring Boot集成</p>
+<p>1. 首先添加依赖<br>```<br>               &lt;dependency&gt;<br>			&lt;groupId&gt;com.alibaba&lt;/groupId&gt;<br>			&lt;artifactId&gt;druid-spring-boot-starter&lt;/artifactId&gt;<br>			&lt;version&gt;1.1.0&lt;/version&gt;<br>		&lt;/dependency&gt;<br>```<br>2. 然后配置[application.properties](https://github.com/x113773/testall/blob/master/src/main/resources/application.properties)<br>```<br>#JDBC<br>spring.datasource.url=jdbc:mysql://localhost:3306/testall?characterEncoding=utf8&amp;useSSL=true<br>spring.datasource.username=root<br>spring.datasource.password=123qwe<br>spring.datasource.driver-class-name=com.mysql.jdbc.Driver #非必需<br>spring.datasource.type=com.alibaba.druid.pool.DruidDataSource #非必需</p>
+<p># 连接池配置,下面配置说明请参考Druid Github Wiki，配置_DruidDataSource参考配置<br>spring.datasource.druid.initialSize=2<br>spring.datasource.druid.minIdle=2<br>spring.datasource.druid.maxActive=30</p>
+<p>######Druid监控配置######<br>#下面配置说明请参考Druid Github Wiki，配置_配置WebStatFilter<br>spring.datasource.druid.WebStatFilter.exclusions=*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</p>
+<p>#下面配置说明请参考Druid Github Wiki，配置_StatViewServlet配置<br>spring.datasource.druid.StatViewServlet.loginUsername=druid<br>spring.datasource.druid.StatViewServlet.loginPassword=druid<br>```<br>更多配置，请参考[这里](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/src/test/resources/config-template.properties)</p>
+<p>---<br>接下来可以启动项目看看，访问http://localhost:8080/druid  首先输入上面配置的用户名和密码 druid 进行登录：</p>
+<p>执行一个查询请求，然后查看SQL监控页面<br>![qq 20170629093628](https://user-images.githubusercontent.com/24689696/27667636-a4633650-5cae-11e7-852a-7bc43cd6672c.png)</p>
+<p>查看数据源页面<br>![qq 20170629093548](https://user-images.githubusercontent.com/24689696/27667637-ab20ebae-5cae-11e7-822d-507989bb7485.png)</p>
+<p>&nbsp;</p>
+<p>---<br>好像发现了个bug，如果启动后直接查看数据源页面会显示(*) property for user to setup，详见[这里](https://github.com/alibaba/druid/issues/1802)</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag">标签: <a href="http://www.cnblogs.com/x113773/tag/springboot/">springboot</a>, <a href="http://www.cnblogs.com/x113773/tag/druid/">druid</a></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(7093171,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;8af56f27-7c79-439c-f003-08d49c352df2&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/x113773/" target="_blank"><img src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/20171228135719.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/x113773/">x113773</a><br>
+            <a href="http://home.cnblogs.com/u/x113773/followees">关注 - 0</a><br>
+            <a href="http://home.cnblogs.com/u/x113773/followers">粉丝 - 2</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;8af56f27-7c79-439c-f003-08d49c352df2&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(7093171,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(7093171,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/x113773/p/7054858.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/x113773/p/7054858.html" title="发布于2017-06-29 17:18">Solr6.6 Tomcat8部署</a><br><a href="http://www.cnblogs.com/x113773/p/7116071.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/x113773/p/7116071.html" title="发布于2017-07-04 12:50">Spring Boot1.5.4 AOP实例</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2017-06-30 13:34</span> <a href="http://www.cnblogs.com/x113773/">x113773</a> 阅读(<span id="post_view_count">1970</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=7093171" rel="nofollow">编辑</a> <a href="https://www.cnblogs.com/x113773/p/7093171.html#" onclick="AddToWz(7093171);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=362295,cb_entryId=7093171,cb_blogApp=currentBlogApp,cb_blogUserGuid='8af56f27-7c79-439c-f003-08d49c352df2',cb_entryCreatedDate='2017/6/30 13:34:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/x113773/p/7093171.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/x113773/p/7093171.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="https://news.cnblogs.com/n/586114/" target="_blank">微信“跳一跳”刷屏 而这家只有5人的小公司月入4000万</a><br> ·  <a href="https://news.cnblogs.com/n/586113/" target="_blank">2018年Lyft、Airbnb等12家科技公司有望IPO</a><br> ·  <a href="https://news.cnblogs.com/n/586112/" target="_blank">疯狂ICO被关停：政策明确非法 暴富神话灰飞烟灭</a><br> ·  <a href="https://news.cnblogs.com/n/586111/" target="_blank">乐视的债权人：乐视融资杠杆接近1：7 机构陷融资陷阱</a><br> ·  <a href="https://news.cnblogs.com/n/586110/" target="_blank">苹果宣布电池降价 消费者质疑：配件利润空间有多大？</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/585502/" target="_blank">步入云计算</a><br> ·  <a href="http://kb.cnblogs.com/page/531409/" target="_blank">以操作系统的角度述说线程与进程</a><br> ·  <a href="http://kb.cnblogs.com/page/141729/" target="_blank">软件测试转型之路</a><br> ·  <a href="http://kb.cnblogs.com/page/177402/" target="_blank">门内门外看招聘</a><br> ·  <a href="http://kb.cnblogs.com/page/112506/" target="_blank">大道至简，职场上做人做事做管理</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news">GitHub：<a href="https://github.com/x113773" target="_blank">点这里</a>
+<br><br>
+简书：<a href="https://www.jianshu.com/u/49b57e65f0ca" target="_blank">点这里</a>
+<br><br>
+微信公众号，扫下面：
+<img src="./springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter) - x113773 - 博客园_files/1185878-20171228140123006-1075508656.jpg"><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/x113773/">x113773</a><br>园龄：<a href="https://home.cnblogs.com/u/x113773/" title="入园时间：2017-06-20">6个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/x113773/followers/">2</a><br>关注：<a href="https://home.cnblogs.com/u/x113773/followees/">0</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;8af56f27-7c79-439c-f003-08d49c352df2&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/11/01&#39;);return false;">&lt;</a></td><td align="center">2017年12月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2018/01/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td align="center">1</td><td class="CalWeekendDay" align="center">2</td></tr><tr><td class="CalWeekendDay" align="center">3</td><td align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td align="center">8</td><td class="CalWeekendDay" align="center">9</td></tr><tr><td class="CalWeekendDay" align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td class="CalWeekendDay" align="center">16</td></tr><tr><td class="CalWeekendDay" align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td align="center">22</td><td class="CalWeekendDay" align="center">23</td></tr><tr><td class="CalWeekendDay" align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center"><a href="http://www.cnblogs.com/x113773/archive/2017/12/28.html"><u>28</u></a></td><td align="center"><a href="http://www.cnblogs.com/x113773/archive/2017/12/29.html"><u>29</u></a></td><td class="CalTodayDay" align="center">30</td></tr><tr><td class="CalWeekendDay" align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block"></div><div id="sidebar_toptags" class="sidebar-block">
+<div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/x113773/tag/springboot/">springboot</a>(6)</li><li><a href="http://www.cnblogs.com/x113773/tag/solr/">solr</a>(2)</li><li><a href="http://www.cnblogs.com/x113773/tag/swagger/">swagger</a>(1)</li><li><a href="http://www.cnblogs.com/x113773/tag/tomcat/">tomcat</a>(1)</li><li><a href="http://www.cnblogs.com/x113773/tag/weblogic/">weblogic</a>(1)</li><li><a href="http://www.cnblogs.com/x113773/tag/ansible/">ansible</a>(1)</li><li><a href="http://www.cnblogs.com/x113773/tag/druid/">druid</a>(1)</li><li><a href="http://www.cnblogs.com/x113773/tag/https/">https</a>(1)</li><li><a href="http://www.cnblogs.com/x113773/tag/mybatis/">mybatis</a>(1)</li>
+</ul>
+</div></div><div id="sidebar_categories">
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案<span style="font-size:11px;font-weight:normal">(21)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/x113773/archive/2017/12.html">2017年12月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/x113773/archive/2017/07.html">2017年7月 (8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/x113773/archive/2017/06.html">2017年6月 (10)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/x113773/p/7227114.html#3865246">1. Re:Spring Boot 使用Redis缓存</a></li>
+        <li class="recent_comment_body">@2YSP引用博主你好，现在新版的springboot，extends CachingConfigurerSupport后要重写的cacheManager（）方法是无参的，同时需要传一个redisTe......</li>
+        <li class="recent_comment_author">--DebugLife</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/x113773/p/7160203.html#3841625">2. Re:Spring Security4实例（Java config 版） —— Remember-Me</a></li>
+        <li class="recent_comment_body">@x113773求联系方式 求教问题...</li>
+        <li class="recent_comment_author">--唯亿豆豆</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/x113773/p/7160203.html#3841223">3. Re:Spring Security4实例（Java config 版） —— Remember-Me</a></li>
+        <li class="recent_comment_body">@唯亿豆豆不好意思啊，我现在没空管这个了，你可以请教一下博主...</li>
+        <li class="recent_comment_author">--亚原子8</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/x113773/p/7160203.html#3841188">4. Re:Spring Security4实例（Java config 版） —— Remember-Me</a></li>
+        <li class="recent_comment_body">@亚原子8求联系方式 求教问题...</li>
+        <li class="recent_comment_author">--唯亿豆豆</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/x113773/p/7227114.html#3829581">5. Re:Spring Boot 使用Redis缓存</a></li>
+        <li class="recent_comment_body">博主你好，现在新版的springboot，extends CachingConfigurerSupport后要重写的cacheManager（）方法是无参的，同时需要传一个redisTemplate对......</li>
+        <li class="recent_comment_author">--2YSP</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/x113773/p/7058955.html">1. Spring Boot 自动重启（spring-boot-devtools）(3423)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7227114.html">2. Spring Boot 使用Redis缓存(2599)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7160194.html">3. Spring Security4实例（Java config版）——ajax登录，自定义验证(2534)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7093171.html">4. springboot1.5.4 配置druid1.1.0(使用druid-spring-boot-starter)(1970)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7054858.html">5. Solr6.6 Tomcat8部署(1362)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/x113773/p/7160203.html">1. Spring Security4实例（Java config 版） —— Remember-Me(11)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7054858.html">2. Solr6.6 Tomcat8部署(4)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7227114.html">3. Spring Boot 使用Redis缓存(2)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/x113773/p/7227114.html">1. Spring Boot 使用Redis缓存(1)</a></li><li><a href="http://www.cnblogs.com/x113773/p/7054858.html">2. Solr6.6 Tomcat8部署(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 x113773
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>
