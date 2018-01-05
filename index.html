@@ -358,7 +358,7 @@
             <h2 id="elk结构图"><a href="#elk结构图" class="headerlink" title="elk结构图"></a>elk结构图</h2><p>  先来张elk的结构图，对我们将搭建的环境有个基本的了解</p>
 <p><img src="http://blog.topspeedsnail.com/wp-content/uploads/2016/05/Screen-Shot-2016-05-06-at-11.17.12.png" alt=""></p>
 <p>  用户通过Nginx反向代理请求到Kibana进行Web操作，Kibana封装了Elasticsearch，提供Web接口进行可视化操作，Logstash进行日志收集，将收集推送给Elasticsearch存储，由于Logstash比较重占用资源比较可观，所以我们使用轻量级的Filebeat在客户服务器上进行日志收集然后推送给Logstash，Logstash再推送给Elasticsearch存储，如果日志量比较大，可能会对FIlebeat到Logstash这个管道处理产生比较大负荷，所以我们可以在这部分的中间插入一个队列进行缓冲，比如redis或者kafka。</p>
-<h2 id="各个组件安装"><a href="#各个组件安装" class="headerlink" title="各个组件安装"></a>各个组件安装</h2><p>  接下来我们就在docker里安装各个用到的组件，由于我自己的电脑使用的ubuntu系统比较熟悉，所以我们还是使用ubuntu的环境，由于有几个组件是基于java开发的，所以运行需要java环境，需要jre8以上，如何安装java环境这里就不操作了。</p>
+<h2 id="各个组件安装"><a href="#各个组件安装" class="headerlink" title="各个组件安装"></a>各个组件安装</h2><p>  接下来我们就在docker里安装各个用到的组件，由于我自己的电脑使用的ubuntu系统比较熟悉，所以我们还是使用ubuntu的环境，由于有几个组件是基于java开发的，所以运行需要java环境，需要jdk8以上，如何安装java环境这里就不操作了。</p>
 <h3 id="docker环境准备"><a href="#docker环境准备" class="headerlink" title="docker环境准备"></a>docker环境准备</h3><p>  我们首选需要一个docker的ubuntu的基础官方镜像</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker search ubuntu</span></span><br></pre></td></tr></table></figure>
 <p>  这个命令可以查询ubuntu相关的镜像文件，是按照星级排序的，OFFICIAL 一栏的[OK]表示是官方镜像，我们使用下面的命令进行镜像下载。</p>
