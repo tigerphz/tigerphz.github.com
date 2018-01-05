@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://www.linuxidc.com/upload/2017_09/170926085914969.png">
 <meta property="og:image" content="http://blog.topspeedsnail.com/wp-content/uploads/2016/05/Screen-Shot-2016-05-06-at-12.14.00.png">
 <meta property="og:image" content="http://www.linuxidc.com/upload/2017_09/1709260859149616.png">
-<meta property="og:updated_time" content="2018-01-05T15:24:17.710Z">
+<meta property="og:updated_time" content="2018-01-05T15:41:37.127Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker下的elk环境搭建">
 <meta name="twitter:description" content="elk结构图  先来张elk的结构图，对我们将搭建的环境有个基本的了解    用户通过Nginx反向代理请求到Kibana进行Web操作，Kibana封装了Elasticsearch，提供Web接口进行可视化操作，Logstash进行日志收集，将收集推送给Elasticsearch存储，由于Logstash比较重占用资源比较可观，所以我们使用轻量级的Filebeat在客户服务器上进行日志收集然后推">
@@ -411,7 +411,7 @@
 <p>重新运行镜像创建新容器，我们映射了三个端口<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -p 5044:5044 -p 8080:80 -p 9200:9200 -d elk:ubuntu /run.sh</span></span><br></pre></td></tr></table></figure></p>
 <p>现在我们访问下 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> ，输入前面安装Nginx设置的用户名密码<br><img src="http://blog.topspeedsnail.com/wp-content/uploads/2016/05/Screen-Shot-2016-05-06-at-12.14.00.png" alt=""><br>就可以看到Kibana的界面了<br><img src="http://www.linuxidc.com/upload/2017_09/1709260859149616.png" alt=""></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>  目前我们只是简单的搭建了一个elk的环境，跑通了从采集日志到查询展示日志也就是从Filebeat到Kibana的各个环节，但是各个组件的配置还有很多需要了解学习，elasticsearch还有很多知识需要学习，以后也会把自己学习实践到的东西继续写出来</p>
-<p>参考文章：<br><a href="https://es.xiaoleilu.com/index.html" target="_blank" rel="noopener">https://es.xiaoleilu.com/index.html</a><br><a href="http://blog.topspeedsnail.com/archives/4825" target="_blank" rel="noopener">http://blog.topspeedsnail.com/archives/4825</a><br><a href="http://www.linuxidc.com/Linux/2017-09/147092p2.htm" target="_blank" rel="noopener">http://www.linuxidc.com/Linux/2017-09/147092p2.htm</a></p>
+<p>参考文章：<br><a href="https://es.xiaoleilu.com/index.html" target="_blank" rel="noopener">https://es.xiaoleilu.com/index.html</a><br><a href="http://blog.topspeedsnail.com/archives/4825" target="_blank" rel="noopener">http://blog.topspeedsnail.com/archives/4825</a><br><a href="http://www.linuxidc.com/Linux/2017-09/147092p2.htm" target="_blank" rel="noopener">http://www.linuxidc.com/Linux/2017-09/147092p2.htm</a><br><a href="https://www.cnblogs.com/sunxucool/p/3799190.html" target="_blank" rel="noopener">https://www.cnblogs.com/sunxucool/p/3799190.html</a><br><a href="http://blog.csdn.net/chengxuyuanyonghu/article/details/54378778" target="_blank" rel="noopener">http://blog.csdn.net/chengxuyuanyonghu/article/details/54378778</a><br><a href="http://m.blog.csdn.net/u012516166/article/details/74946823" target="_blank" rel="noopener">http://m.blog.csdn.net/u012516166/article/details/74946823</a></p>
 
       
     </div>
