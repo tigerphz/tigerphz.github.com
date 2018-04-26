@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="tigerphz&#39;s Notes">
 <meta property="og:description" content="前言  上一篇文章docker下的elk环境搭建我们介绍了docker下的elk各个组件的部署，走通了从采集日志到查询日志的流程，但是我们之前部署的elasticsearch组件采用的单实例部署，这样并不能很好的利用系统资源，并且也不安全，如果仅有的一个实例出现了问题那么整个服务就瘫痪了，而且数据配置等都保存在docker容器中，这样也不利于我们管理维护，所以接下来我们就要解决这两个问题。 解决方">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-08T03:34:14.302Z">
+<meta property="og:updated_time" content="2018-01-08T03:34:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elasticsearch 单机多实例部署">
 <meta name="twitter:description" content="前言  上一篇文章docker下的elk环境搭建我们介绍了docker下的elk各个组件的部署，走通了从采集日志到查询日志的流程，但是我们之前部署的elasticsearch组件采用的单实例部署，这样并不能很好的利用系统资源，并且也不安全，如果仅有的一个实例出现了问题那么整个服务就瘫痪了，而且数据配置等都保存在docker容器中，这样也不利于我们管理维护，所以接下来我们就要解决这两个问题。 解决方">
@@ -417,6 +417,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/04/26/rabbitmq-install/" rel="prev" title="RabbitMQ 安装">
+                RabbitMQ 安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -498,7 +502,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -509,7 +513,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -520,7 +524,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -569,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x89E3;&#x51B3;&#x65B9;&#x6848;" class="headerlink" title="&#x89E3;&#x51B3;&#x65B9;&#x6848;"></a>&#x89E3;&#x51B3;&#x65B9;&#x6848;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实施步骤"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5B9E;&#x65BD;&#x6B65;&#x9AA4;" class="headerlink" title="&#x5B9E;&#x65BD;&#x6B65;&#x9AA4;"></a>&#x5B9E;&#x65BD;&#x6B65;&#x9AA4;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-容器启动"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#docker-&#x5BB9;&#x5668;&#x542F;&#x52A8;" class="headerlink" title="docker &#x5BB9;&#x5668;&#x542F;&#x52A8;"></a>docker &#x5BB9;&#x5668;&#x542F;&#x52A8;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#elasticsearc-配置"><span class="nav-number">3.2.</span> <span class="nav-text"><a href="#elasticsearc-&#x914D;&#x7F6E;" class="headerlink" title="elasticsearc &#x914D;&#x7F6E;"></a>elasticsearc &#x914D;&#x7F6E;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据以及配置文件路径创建"><span class="nav-number">3.2.1.</span> <span class="nav-text"><a href="#&#x6570;&#x636E;&#x4EE5;&#x53CA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x521B;&#x5EFA;" class="headerlink" title="&#x6570;&#x636E;&#x4EE5;&#x53CA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x521B;&#x5EFA;"></a>&#x6570;&#x636E;&#x4EE5;&#x53CA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x521B;&#x5EFA;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#各节点elasticsearch-yml配置"><span class="nav-number">3.2.2.</span> <span class="nav-text"><a href="#&#x5404;&#x8282;&#x70B9;elasticsearch-yml&#x914D;&#x7F6E;" class="headerlink" title="&#x5404;&#x8282;&#x70B9;elasticsearch.yml&#x914D;&#x7F6E;"></a>&#x5404;&#x8282;&#x70B9;elasticsearch.yml&#x914D;&#x7F6E;</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#node1-节点的elasticsearch-yml文件配置"><span class="nav-number">3.2.2.1.</span> <span class="nav-text"><a href="#node1-&#x8282;&#x70B9;&#x7684;elasticsearch-yml&#x6587;&#x4EF6;&#x914D;&#x7F6E;" class="headerlink" title="node1 &#x8282;&#x70B9;&#x7684;elasticsearch.yml&#x6587;&#x4EF6;&#x914D;&#x7F6E;"></a>node1 &#x8282;&#x70B9;&#x7684;elasticsearch.yml&#x6587;&#x4EF6;&#x914D;&#x7F6E;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#node2-节点的elasticsearch-yml文件配置"><span class="nav-number">3.2.2.2.</span> <span class="nav-text"><a href="#node2-&#x8282;&#x70B9;&#x7684;elasticsearch-yml&#x6587;&#x4EF6;&#x914D;&#x7F6E;" class="headerlink" title="node2 &#x8282;&#x70B9;&#x7684;elasticsearch.yml&#x6587;&#x4EF6;&#x914D;&#x7F6E;"></a>node2 &#x8282;&#x70B9;&#x7684;elasticsearch.yml&#x6587;&#x4EF6;&#x914D;&#x7F6E;</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elasticsearch服务启动"><span class="nav-number">3.2.3.</span> <span class="nav-text"><a href="#elasticsearch&#x670D;&#x52A1;&#x542F;&#x52A8;" class="headerlink" title="elasticsearch&#x670D;&#x52A1;&#x542F;&#x52A8;"></a>elasticsearch&#x670D;&#x52A1;&#x542F;&#x52A8;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结束"><span class="nav-number">3.3.</span> <span class="nav-text"><a href="#&#x7ED3;&#x675F;" class="headerlink" title="&#x7ED3;&#x675F;"></a>&#x7ED3;&#x675F;</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实施步骤"><span class="nav-number">3.</span> <span class="nav-text">实施步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-容器启动"><span class="nav-number">3.1.</span> <span class="nav-text">docker 容器启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#elasticsearc-配置"><span class="nav-number">3.2.</span> <span class="nav-text">elasticsearc 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据以及配置文件路径创建"><span class="nav-number">3.2.1.</span> <span class="nav-text">数据以及配置文件路径创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#各节点elasticsearch-yml配置"><span class="nav-number">3.2.2.</span> <span class="nav-text">各节点elasticsearch.yml配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#node1-节点的elasticsearch-yml文件配置"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">node1 节点的elasticsearch.yml文件配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#node2-节点的elasticsearch-yml文件配置"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">node2 节点的elasticsearch.yml文件配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elasticsearch服务启动"><span class="nav-number">3.2.3.</span> <span class="nav-text">elasticsearch服务启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结束"><span class="nav-number">3.3.</span> <span class="nav-text">结束</span></a></li></ol></li></ol></div>
             
 
           </div>
