@@ -369,67 +369,28 @@
 </ul>
 <h2 id="安装RabbitMQ监控管理插件"><a href="#安装RabbitMQ监控管理插件" class="headerlink" title="安装RabbitMQ监控管理插件"></a>安装RabbitMQ监控管理插件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
 <p>启动插件后可以通过地址 <a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a> 登陆RabbitMQ管理页面，对RabbitMQ进行管理。</p>
-<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><ul>
-<li>启动<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rabbitmq-server start</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><p>启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rabbitmq-server start</span><br></pre></td></tr></table></figure></p>
 <p>或<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-server –detached</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>关闭<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rabbitmq-server stop</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>关闭<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rabbitmq-server stop</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl stop</span><br></pre></td></tr></table></figure>
-<ul>
-<li>插件管理<br>开启某个插件：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins <span class="built_in">enable</span> xxx</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>插件管理<br>开启某个插件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins <span class="built_in">enable</span> xxx</span><br></pre></td></tr></table></figure></p>
 <p>关闭某个插件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins <span class="built_in">disable</span> xxx</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><p>用户管理<br>新建用户：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl add_user xxx <span class="built_in">pwd</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除用户: </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl delete_user xxx</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>改密码: </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbimqctl change_password &#123;username&#125; &#123;newpassword&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>设置用户角色：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_user_tags &#123;username&#125; &#123;tag ...&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>用户管理<br>新建用户：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl add_user xxx <span class="built_in">pwd</span></span><br></pre></td></tr></table></figure></p>
+<p>删除用户:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl delete_user xxx</span><br></pre></td></tr></table></figure></p>
+<p>改密码:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbimqctl change_password &#123;username&#125; &#123;newpassword&#125;</span><br></pre></td></tr></table></figure></p>
+<p>设置用户角色：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_user_tags &#123;username&#125; &#123;tag ...&#125;</span><br></pre></td></tr></table></figure></p>
 <p>Tag可以为 administrator,monitoring, management</p>
-<ul>
-<li><p>权限设置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_permissions [-pvhostpath] &#123;user&#125; &#123;conf&#125; &#123;write&#125; &#123;<span class="built_in">read</span>&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>服务器状态：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl status</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>队列信息：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl list_queues[-p vhostpath] [queueinfoitem ...]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>权限设置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_permissions [-pvhostpath] &#123;user&#125; &#123;conf&#125; &#123;write&#125; &#123;<span class="built_in">read</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>服务器状态：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl status</span><br></pre></td></tr></table></figure></p>
+<p>队列信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl list_queues[-p vhostpath] [queueinfoitem ...]</span><br></pre></td></tr></table></figure></p>
 <p>Queueinfoitem可以为：name，durable，auto_delete，arguments，messages_ready，messages_unacknowledged，messages，consumers，memory</p>
-<ul>
-<li>Exchange信息：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctllist_exchanges[-p vhostpath] [exchangeinfoitem ...]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>Exchange信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctllist_exchanges[-p vhostpath] [exchangeinfoitem ...]</span><br></pre></td></tr></table></figure></p>
 <p>Exchangeinfoitem有：name，type，durable，auto_delete，internal，arguments.</p>
-<ul>
-<li>Binding信息：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctllist_bindings[-p vhostpath] [bindinginfoitem ...]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>Binding信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctllist_bindings[-p vhostpath] [bindinginfoitem ...]</span><br></pre></td></tr></table></figure></p>
 <p>Bindinginfoitem有：source_name，source_kind，destination_name，destination_kind，routing_key，arguments</p>
-<ul>
-<li>Connection信息：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctllist_connections [connectioninfoitem ...]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>Connection信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctllist_connections [connectioninfoitem ...]</span><br></pre></td></tr></table></figure></p>
 <p>Connectioninfoitem有：recv_oct，recv_cnt，send_oct，send_cnt，send_pend等。</p>
-<ul>
-<li>Channel信息：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl list_channels[channelinfoitem ...]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<p>Channel信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl list_channels[channelinfoitem ...]</span><br></pre></td></tr></table></figure></p>
 <p>Channelinfoitem有consumer_count，messages_unacknowledged，messages_uncommitted，acks_uncommitted，messages_unconfirmed，prefetch_count，client_flow_blocked</p>
 <h2 id="RabbitMQ管理界面"><a href="#RabbitMQ管理界面" class="headerlink" title="RabbitMQ管理界面"></a>RabbitMQ管理界面</h2><p><img src="http://lc-gjllsjil.cn-n1.lcfile.com/cd77cc3d682a9d1ecf6c.png" alt="img"></p>
 
