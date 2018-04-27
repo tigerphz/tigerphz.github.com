@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="AMQP背景AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制，与2004年由摩根大通跟iMatrix开始着手该协议的开发，2006年AMQP规范发布，2007年，Rab">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq 简介">
+<meta property="og:url" content="http://tigerphz.com/2018/04/27/rabbitmq-introduce/index.html">
+<meta property="og:site_name" content="tigerphz&#39;s Notes">
+<meta property="og:description" content="AMQP背景AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制，与2004年由摩根大通跟iMatrix开始着手该协议的开发，2006年AMQP规范发布，2007年，Rab">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/c04a66fedc390099eabe.jpg">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/f7be0f84efe2402153d5.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/2e24fe18780f948a2f05.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/6c9d9887bc1358c060ca.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/13f7b02bd2f0c615c790.png">
+<meta property="og:updated_time" content="2018-04-27T12:00:55.142Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rabbitmq 简介">
+<meta name="twitter:description" content="AMQP背景AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制，与2004年由摩根大通跟iMatrix开始着手该协议的开发，2006年AMQP规范发布，2007年，Rab">
+<meta name="twitter:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/c04a66fedc390099eabe.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tigerphz.com/2018/04/27/rabbitmq-introduce/"/>
+
+
+
+
+
+  <title>rabbitmq 简介 | tigerphz's Notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tigerphz's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">哥在写寂寞</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/27/rabbitmq-introduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">rabbitmq 简介</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T21:24:27+08:00">
+                2018-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="AMQP背景"><a href="#AMQP背景" class="headerlink" title="AMQP背景"></a>AMQP背景</h2><p>AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制，与2004年由摩根大通跟iMatrix开始着手该协议的开发，2006年AMQP规范发布，2007年，Rabbit公司基于AMQP标准开发的RabbtiMQ1.0发布，使用Erlang语言开发，Erlang语言由Ericson设计，专门为开发concurrent和distribution系统的一种语言。</p>
+<h2 id="AMQP基本概念"><a href="#AMQP基本概念" class="headerlink" title="AMQP基本概念"></a>AMQP基本概念</h2><p><img src="http://lc-gjllsjil.cn-n1.lcfile.com/c04a66fedc390099eabe.jpg" alt="img"></p>
+<ul>
+<li>Broker：接受和分发消息的应用，RabbitMQ Server 就是 Message Broker</li>
+<li>Virtual Host：出于多租户和安全因素的设计，把AMQP的基本组件划分到了一个个的虚拟分组中，当多个不同的用户使用同一个RabbitMQ Server提供的服务的时候，可以划分多个Virtual host，每个用户在自己的Virtual host创建Exchange/queue等等，起到隔离作用。</li>
+<li>Connection：Publisher/Consumer和Broker之间通过TCP连接，断开连接的操作只会在Client端，Broker不会断开，除非出现网络故障或者Broke服务异常</li>
+<li>Channel：如果每次访问RabbitMQ都建立一个Connection连接，消息量大的时候建立TCP Connection连接开销是非常大的，效率也比较低，Channel是在Connection内部建立的逻辑连接，如果应用程序支持多线程，每个线程通常会创建单独的Channel今昔通讯，AMQP method包含了 Channel Id 帮助客户端和Message Broker识别Channel，所以不同的Channel之间是安全隔离的，Channel作为轻量级的Connection极大的减少了操作系统建立TCP Connection的开销</li>
+<li>Exchange：message到达Broker的第一站，根据配置的分发规则，匹配查询表里的routing key，分发消息到匹配的的queue中，常用的类型有direct (point-to-point)，topic (publish-subscribe) and fanout (multicast)，topic类型的routing key支持*(匹配一个单词) #(匹配0个或者多个单词)两个通配符</li>
+<li>Queue：消息最终配存放的地方，等待被consumer取走，一个message可以被同时拷贝到多个queue中</li>
+<li>Binding：Exchange和queue之间的虚拟连接，binding中可以包含routing key。Binding信息被保存到exchange中的查询表中，用于message的分发依据</li>
+</ul>
+<h2 id="组件流向图"><a href="#组件流向图" class="headerlink" title="组件流向图"></a>组件流向图</h2><ul>
+<li><p>Producer Consumer<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/f7be0f84efe2402153d5.png" alt="img"></p>
+<p>Producer推送消息到Broker中，Broker内部创建好了Exchange Queue，并通过Binding将两者关联起来，Echange分发消息的时候会根据自身的类型以及Binding不同的分发策将消息放入匹配的Queue队列中，等待Consumer取走。</p>
+</li>
+</ul>
+<h2 id="Exchange三种类型"><a href="#Exchange三种类型" class="headerlink" title="Exchange三种类型"></a>Exchange三种类型</h2><ul>
+<li>Direct<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/2e24fe18780f948a2f05.png" alt="img"></li>
+</ul>
+<p>Direct类型的Exchange会根据发送消息时传递的routing_key去查找Binding时设置有相同的routing_key的关联队列，然后把消息存到关联的队列中，然后等待Consumer到队列中消费消息,如果没有找到关联队列，消息会被丢弃</p>
+<ul>
+<li>Topic<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/6c9d9887bc1358c060ca.png" alt="img"></li>
+</ul>
+<p>Topic类型的Exchange会根据routing key 以及通配规则，按照规则找到匹配的绑定的queue中，routing key 的值通常设置多个单词使用<code>.</code>连接<br>routing key中包含两种通配符：<br><code>#</code> 可以匹配零个或者多个单词<br><code>*</code> 匹配任意单个单词</p>
+<ul>
+<li>Fanout<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/13f7b02bd2f0c615c790.png" alt="img"></li>
+</ul>
+<p>Fanout类型的Exchagne会把消息广播到所有绑定的queue中去</p>
+<h2 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h2><p>Producer<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="comment">#连接RabbitMQ的账号密码</span></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"><span class="comment">#创建connection连接</span></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.11.176'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"><span class="comment">#创建channel</span></span><br><span class="line">channel = connection.channel()</span><br><span class="line"><span class="comment">#定义queue 取名 hello，使用前最好都重新定义，如果队列已经存在会忽略该动作</span></span><br><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>)</span><br><span class="line"><span class="comment">#发送消息 使用默认的exchange 设置 routing key 为 hello，hello就是上面创建队列的名字</span></span><br><span class="line">channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'hello'</span>, body=<span class="string">'hello world'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'[x] send hello world'</span>)</span><br><span class="line"></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"><span class="comment">#连接RabbitMQ的账号密码</span></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"><span class="comment">#创建connection连接</span></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.11.176'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"><span class="comment">#创建channel</span></span><br><span class="line">channel = connection.channel()</span><br><span class="line"><span class="comment">#定义queue 取名 hello，使用前最好都重新定义，如果队列已经存在会忽略该动作</span></span><br><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义接受消息的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] receive %r'</span> % (body,))</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置监听名字为hello队列</span></span><br><span class="line">channel.basic_consume(callback, queue=<span class="string">'hello'</span>, no_ack=<span class="keyword">True</span>)</span><br><span class="line"><span class="comment">#开启监听</span></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>参考资料</p>
+<ul>
+<li><a href="http://www.cnblogs.com/frankyou/p/5283539.html" target="_blank" rel="noopener">http://www.cnblogs.com/frankyou/p/5283539.html</a></li>
+<li><a href="https://blog.csdn.net/anzhsoft/article/details/19563091" target="_blank" rel="noopener">https://blog.csdn.net/anzhsoft/article/details/19563091</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/26/rabbitmq-install/" rel="next" title="RabbitMQ 安装">
+                <i class="fa fa-chevron-left"></i> RabbitMQ 安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div id="vcomments"></div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tiger.jpeg"
+                alt="tigerphz" />
+            
+              <p class="site-author-name" itemprop="name">tigerphz</p>
+              <p class="site-description motion-element" itemprop="description">哥在写寂寞</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tigerphz" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:191130620@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AMQP背景"><span class="nav-number">1.</span> <span class="nav-text">AMQP背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AMQP基本概念"><span class="nav-number">2.</span> <span class="nav-text">AMQP基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件流向图"><span class="nav-number">3.</span> <span class="nav-text">组件流向图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exchange三种类型"><span class="nav-number">4.</span> <span class="nav-text">Exchange三种类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单示例"><span class="nav-number">5.</span> <span class="nav-text">简单示例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tigerphz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine@1.1.4/dist/Valine.min.js"></script>
+  <script type="text/javascript">
+    new Valine({
+        av: AV,
+        el: '#vcomments' ,
+        verify: false,
+        notify: false,
+        app_id: 'gJllSjilgzBkDFiRdaeSDve8-gzGzoHsz',
+        app_key: '5zSPujjcFN7QMh8atnnnvMJP',
+        placeholder: 'Leave a comment'
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
