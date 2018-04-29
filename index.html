@@ -358,7 +358,7 @@
             <h2 id="ACK-消息确认机制"><a href="#ACK-消息确认机制" class="headerlink" title="ACK 消息确认机制"></a>ACK 消息确认机制</h2><p>上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还没有收到确认消息表示消息没有被成功处理。</p>
 <p>使用消息确认机制还能保证消息不丢失，Consumer成功处理消息后发送确认消息，RabbitMQ Server才会任务消息被成功处理，然后才会把消息标记为已完成从queue中删除，如果Consumer异常或者未发送确认消息，RabbitMQ则认为消息并没有成功被处理，后续会再发送给其他Consumer进行处理，直到收到对应的确认消息，这样就能保证消息不丢失，能被正真的处理。</p>
 <p>如果不使用确认机制，那么RabbitMQ Server 发送的消息Consumer接收以后，不管Consumer是否处理完成，直接把消息标记为完成从queue队列中删除。</p>
-<p>我们继续使用上面的公平分发里的Consumer代码来模拟一个处理过程中关闭程序，看下消息是否还保存再队列中，该代码里我们已经开启了手动消息确认机制(默认打开) ，然后回掉函数的ch.basic_ack(delivery_tag=method.delivery_tag)这句代码表示确认消息。我们使用最开头的Producer代码发送一条消息，然后开启一个Consumer可以把休眠时间设置长一点10秒把，再任务未处理完成前关闭程序，然后到管理界面查看消息是否还存在。</p>
+<p>我们继续使用上面的公平分发里的Consumer代码来模拟一个处理过程中关闭程序，看下消息是否还保存再队列中，该代码里我们已经开启了手动消息确认机制(默认打开) ，然后回调函数的ch.basic_ack(delivery_tag=method.delivery_tag)这句代码表示确认消息。我们使用上一节开头提供的Producer代码发送一条消息，然后开启一个Consumer可以把休眠时间设置长一点10秒把，再任务未处理完成前关闭程序，然后到管理界面查看消息是否还存在。</p>
 <p>开启Producer发送一条消息：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/8162bd1dd49c4b362097.png" alt="img"></p>
 <p>管理界面 hello队列中可以看到刚才1条刚才发送的消息：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/0a0e4e2f7d9811873572.png" alt="img"></p>
 <p>开启Consumer接受消息进行处理 可以看到消息并没有处理完成因为没有打印 [x] done ：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/065d8e18774927934c16.png" alt="img"></p>
