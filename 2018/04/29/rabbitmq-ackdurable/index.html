@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ入门," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ACK 消息确认机制上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还">
+<meta name="keywords" content="RabbitMQ入门">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq-消息确认机制与持久化存储">
+<meta property="og:url" content="http://tigerphz.com/2018/04/29/rabbitmq-ackdurable/index.html">
+<meta property="og:site_name" content="tigerphz&#39;s Notes">
+<meta property="og:description" content="ACK 消息确认机制上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/8162bd1dd49c4b362097.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/0a0e4e2f7d9811873572.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/065d8e18774927934c16.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/e5b91044beef4343f535.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/0a0e4e2f7d9811873572.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/0de419c56e0f4ecd9646.png">
+<meta property="og:updated_time" content="2018-04-29T05:28:44.013Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rabbitmq-消息确认机制与持久化存储">
+<meta name="twitter:description" content="ACK 消息确认机制上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还">
+<meta name="twitter:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/8162bd1dd49c4b362097.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tigerphz.com/2018/04/29/rabbitmq-ackdurable/"/>
+
+
+
+
+
+  <title>rabbitmq-消息确认机制与持久化存储 | tigerphz's Notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tigerphz's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">哥在写寂寞</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/29/rabbitmq-ackdurable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">rabbitmq-消息确认机制与持久化存储</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T12:46:05+08:00">
+                2018-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="ACK-消息确认机制"><a href="#ACK-消息确认机制" class="headerlink" title="ACK 消息确认机制"></a>ACK 消息确认机制</h2><p>上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还没有收到确认消息表示消息没有被成功处理。</p>
+<p>使用消息确认机制还能保证消息不丢失，Consumer成功处理消息后发送确认消息，RabbitMQ Server才会任务消息被成功处理，然后才会把消息标记为已完成从queue中删除，如果Consumer异常或者未发送确认消息，RabbitMQ则认为消息并没有成功被处理，后续会再发送给其他Consumer进行处理，直到收到对应的确认消息，这样就能保证消息不丢失，能被正真的处理。</p>
+<p>如果不使用确认机制，那么RabbitMQ Server 发送的消息Consumer接收以后，不管Consumer是否处理完成，直接把消息标记为完成从queue队列中删除。</p>
+<p>我们继续使用上面的公平分发里的Consumer代码来模拟一个处理过程中关闭程序，看下消息是否还保存再队列中，该代码里我们已经开启了手动消息确认机制(默认打开) ，然后回掉函数的ch.basic_ack(delivery_tag=method.delivery_tag)这句代码表示确认消息。我们使用最开头的Producer代码发送一条消息，然后开启一个Consumer可以把休眠时间设置长一点10秒把，再任务未处理完成前关闭程序，然后到管理界面查看消息是否还存在。</p>
+<p>开启Producer发送一条消息：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/8162bd1dd49c4b362097.png" alt="img"></p>
+<p>管理界面 hello队列中可以看到刚才1条刚才发送的消息：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/0a0e4e2f7d9811873572.png" alt="img"></p>
+<p>开启Consumer接受消息进行处理 可以看到消息并没有处理完成因为没有打印 [x] done ：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/065d8e18774927934c16.png" alt="img"></p>
+<p>当RabbitMQ Server把消息发送给Consumer的后再没有接受到应答前 管理界面 hello队列里的该消息被标记为Unacked<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/e5b91044beef4343f535.png" alt="img"></p>
+<p>当我再Consumer未处理完成返回确认消息前关闭程序,那么管理界面 hello队列里的该消息又会重新被标记为Ready<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/0a0e4e2f7d9811873572.png" alt="img"></p>
+<p>等其他Consumer连接到hello队列的时候，会再次发送该消息。</p>
+<h2 id="持久化存储"><a href="#持久化存储" class="headerlink" title="持久化存储"></a>持久化存储</h2><p>消息确认机制虽然可以从消息处理流程上保证消息不丢失，但这只仅限于RabbitMQ Server正确运行的条件下，万一我们的RabbitMQ Server异常了或者我们的服务器重启了，由于我们的队列以及消息数据默认保存在内存中，所以肯定就丢失了。<br>所以我们必须开启消息持久化能力，让数据能保存到磁盘上，防止数据的丢失。<br>首先我们在创建队列的时候要指定为持久化，加入参数durable=True<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>, durable=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<p>如果我们已经存在名称为hello的队列，那么这个语句不会起作用，可以到管理页面找到该队列，进入该队列的明细页面先删除该队列。<br>然后发送消息的时候也要指明持久化<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">channel.basic_publish(exchange=<span class="string">''</span>,</span><br><span class="line">                      routing_key=<span class="string">"hello"</span>,</span><br><span class="line">                      body=message,</span><br><span class="line">                      properties=pika.BasicProperties(</span><br><span class="line">                         delivery_mode = <span class="number">2</span>, <span class="comment">#设置消息持久化</span></span><br><span class="line">                      ))</span><br></pre></td></tr></table></figure></p>
+<p>虽然我们使用消息确认机制跟持久化能保证消息不丢失，但是这个并不是百分之百的能保证所有消息不丢失，RabbitMQ Server 并不是收到收到每一条消息就同步进行持久化操作写入磁盘的，这样肯定会验证的影响性能，可能是先缓存起来了还没来得及写入磁盘，那么这个时候crash掉了，这部分还没有来得及存储的消息肯定就会丢失掉。</p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>Producer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.0.110'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"><span class="comment">#定义队列设置持久化durable=True</span></span><br><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>, durable=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">2</span>):</span><br><span class="line">    message = <span class="string">'hello world '</span> + str(num)</span><br><span class="line">    <span class="comment">#发送消息设置持久化delivery_mode=2</span></span><br><span class="line">    channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'hello'</span>, body=message,</span><br><span class="line">                          properties=pika.BasicProperties(delivery_mode=<span class="number">2</span>))</span><br><span class="line">    print(<span class="string">" [x] Sent %r"</span> % (message,))</span><br><span class="line"></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.0.110'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>, durable=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">channel.basic_qos(prefetch_count=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] receive %r'</span> % (body,))</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    print(<span class="string">'[x] done %s'</span> % (time.strftime(<span class="string">'%H:%M:%S'</span>, time.localtime(time.time())),))</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=<span class="string">'hello'</span>)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>调用一次Producer程序然后查看下管理界面的hello队列，看到创建的hello队列有个Features为durable:true表示为持久化队列，里面存储了一条我们刚刚发送的消息<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/0de419c56e0f4ecd9646.png" alt="img"></p>
+<p>我们可以重启RabbitMQ Server看看我们的hello消息队列以及里面的那条消息是否还在。我们要持久化发送的消息的前提必须首先保证我们的消息队列是可持久化的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ入门/" rel="tag"># RabbitMQ入门</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/28/rabbitmq-distribution/" rel="next" title="rabbitmq-分发机制">
+                <i class="fa fa-chevron-left"></i> rabbitmq-分发机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div id="vcomments"></div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tiger.jpeg"
+                alt="tigerphz" />
+            
+              <p class="site-author-name" itemprop="name">tigerphz</p>
+              <p class="site-description motion-element" itemprop="description">哥在写寂寞</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tigerphz" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:191130620@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ACK-消息确认机制"><span class="nav-number">1.</span> <span class="nav-text">ACK 消息确认机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持久化存储"><span class="nav-number">2.</span> <span class="nav-text">持久化存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码示例"><span class="nav-number">3.</span> <span class="nav-text">代码示例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tigerphz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine@1.1.4/dist/Valine.min.js"></script>
+  <script type="text/javascript">
+    new Valine({
+        av: AV,
+        el: '#vcomments' ,
+        verify: false,
+        notify: false,
+        app_id: 'gJllSjilgzBkDFiRdaeSDve8-gzGzoHsz',
+        app_key: '5zSPujjcFN7QMh8atnnnvMJP',
+        placeholder: 'Leave a comment'
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
