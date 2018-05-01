@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言不知道大家注意到没，前面的文章我们发送消息的时候都是这么写的12channel.queue_declare(queue=&apos;cache_hello&apos;)channel.basic_publish(exchange=&apos;&apos;, routing_key=&apos;cache_hello&apos;, body=message) 关注第一个和第二个参数，第一个参数exchange我们赋值的是空字符串，第二个参数outing_">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq-发布&#x2F;订阅">
+<meta property="og:url" content="http://tigerphz.com/2018/05/01/rabbitmq-publishSubscribe/index.html">
+<meta property="og:site_name" content="tigerphz&#39;s Notes">
+<meta property="og:description" content="前言不知道大家注意到没，前面的文章我们发送消息的时候都是这么写的12channel.queue_declare(queue=&apos;cache_hello&apos;)channel.basic_publish(exchange=&apos;&apos;, routing_key=&apos;cache_hello&apos;, body=message) 关注第一个和第二个参数，第一个参数exchange我们赋值的是空字符串，第二个参数outing_">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/e9ba8577e6dc673ad6f6.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/f7be0f84efe2402153d5.png">
+<meta property="og:image" content="http://www.rabbitmq.com/img/tutorials/bindings.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/b0dae8935cef840d3008.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/4960a22d5328c6456eed.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/a98e2727ff82b3e8286c.png">
+<meta property="og:updated_time" content="2018-05-01T11:52:07.893Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rabbitmq-发布&#x2F;订阅">
+<meta name="twitter:description" content="前言不知道大家注意到没，前面的文章我们发送消息的时候都是这么写的12channel.queue_declare(queue=&apos;cache_hello&apos;)channel.basic_publish(exchange=&apos;&apos;, routing_key=&apos;cache_hello&apos;, body=message) 关注第一个和第二个参数，第一个参数exchange我们赋值的是空字符串，第二个参数outing_">
+<meta name="twitter:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/e9ba8577e6dc673ad6f6.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tigerphz.com/2018/05/01/rabbitmq-publishSubscribe/"/>
+
+
+
+
+
+  <title>rabbitmq-发布/订阅 | tigerphz's Notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tigerphz's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">哥在写寂寞</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/01/rabbitmq-publishSubscribe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">rabbitmq-发布/订阅</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T15:14:19+08:00">
+                2018-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不知道大家注意到没，前面的文章我们发送消息的时候都是这么写的<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_declare(queue=<span class="string">'cache_hello'</span>)</span><br><span class="line">channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'cache_hello'</span>, body=message)</span><br></pre></td></tr></table></figure></p>
+<p>关注第一个和第二个参数，第一个参数exchange我们赋值的是空字符串，第二个参数outing_key我们赋值的’cache_hello’，这个是我们定义的queue的名字。<br>当我们给exchange赋值空字符串的时候，表示使用RabbitMQ Server的默认Exchange转发器，消息会根据我们指定的routing_key推送到与该值对应名字的消息队列中。<br>我们可以看看管理页面里RabbitMQ Server定义的默认Exchange的描述<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/e9ba8577e6dc673ad6f6.png" alt="img"><br>默认的消息队列是支持持久化的并且是Direct类型的转发器。Bindings栏的英文表示默认Exchange转发器可以隐式绑定到与routing_key的值相同名字的队列上，默认Exchange转发器不能进行显示绑定或者解绑操作，也不能进行删除操作。<br>我们之前的实例代码都是把消息推送到一个指定的queue队列中，接下来我们尝试使用“发布/订阅”把消息推送给多个队列，我们构建一个简单的日志系统来验证这种模式，Producer负责收集系统日志然后发出日志，Consumer负责接受日志并且打印日志，我们将构建两个Consumer，一个负责输出日志到屏幕，一个负责把日志写到磁盘上。</p>
+<h2 id="Exchange转发器"><a href="#Exchange转发器" class="headerlink" title="Exchange转发器"></a>Exchange转发器</h2><p>首先我们来看看之前文章的AMQP组件流向图<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/f7be0f84efe2402153d5.png" alt="img"><br>从图中可以看出Producer并不是直接把消息发送到queue队列中的，Producer并不知道它发送的消息要发送到哪个queue队列以及是否已经到达queue队列。消息是通过Exchange转发器进行转发到queue队列中的，Exchange与queue队列又是通过Bindings进行绑定配置的。<br>所以Exchange需要知道如何处理消息，该把消息放置到一个queue队列还是多个queue队列，这个规则是基于Exchange的类型决定的。<br>我们前面的文章里介绍了Exchange转发器有三种类型：direct，topic，fanout。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义fanout类型的Exchange转发器</span></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'logs'</span>, exchange_type=<span class="string">'fanout'</span>)</span><br><span class="line"><span class="comment">#发送消息</span></span><br><span class="line">channel.basic_publish(exchange=<span class="string">'logs'</span>, routing_key=<span class="string">''</span>, body=message)</span><br></pre></td></tr></table></figure></p>
+<p>可以通过上面代码中的exchange_declare方法定义Exchagne，exchange=’logs’参数表示我们定义的Exchange的名字，exchange_type=’fanout’表示我们定义的fanout类型(广播模式)的转发器。basic_publish方法发送消息，我们指定了exchange为我们定义的logs转发器，并没有指定routing_key参数，因为我们要广播发送给与logs转发器绑定的所有queue队列。</p>
+<h2 id="Temporary-queues（临时队列）"><a href="#Temporary-queues（临时队列）" class="headerlink" title="Temporary queues（临时队列）"></a>Temporary queues（临时队列）</h2><p>之前我们使用的队列都是提前定义的有具体名字的队列，当我们使用有具体名字的队列的时候，表示我们的所有的Consumer消费者都关心该队列里的消息，并且每个消费者只能获取里面的部分消息，因为同一个消息只会发送给与该队列连接的一个消费者。但是在这里的日志系统里，我们每个新连接的Consumer消费者需要接受所有的日志消息，并且只关心当前的日志消息，在该Consumer连接前的日志却并不关系。<br>所以我们需要在每个新的Consumer进行连接的时候申明一个新queue队列，名字我们并不关心，因为只有该consumer使用，并且该queue在该Consumer关闭的时候可以自动的删除。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义新队列 exclusive=True 表示关闭连接的时候自动删除该queue对立</span></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"><span class="comment">#获取临时队列的名称</span></span><br><span class="line">queuename = result.method.queue</span><br></pre></td></tr></table></figure></p>
+<p>使用上面的代码可以为我们创建一个会自动删除的临时队列，队列的名字由RabbitMQ Server随机命名，比如：’amq.gen-Zg3NrcqQg5gSupdVB0AtCA’</p>
+<h2 id="Bindings（绑定）"><a href="#Bindings（绑定）" class="headerlink" title="Bindings（绑定）"></a>Bindings（绑定）</h2><p><img src="http://www.rabbitmq.com/img/tutorials/bindings.png" alt="img"><br>我们创建了fanout类型的Exchange还有临时队列，现在需要把两者关联起来，这个就需要用到Bindings了，不然Exchange怎么知道把消息发送给哪个queue呢。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename)</span><br></pre></td></tr></table></figure></p>
+<h2 id="完整实例"><a href="#完整实例" class="headerlink" title="完整实例"></a>完整实例</h2><p>Producer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'logs'</span>, exchange_type=<span class="string">'fanout'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">7</span>):</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    message = <span class="string">'[%s]-log-error-%s'</span> % (time.strftime(<span class="string">'%H:%M:%S'</span>, time.localtime(time.time())), str(num))</span><br><span class="line">    channel.basic_publish(exchange=<span class="string">'logs'</span>, routing_key=<span class="string">''</span>, body=message)</span><br><span class="line">    print(<span class="string">" [x] Sent %r"</span> % (message,))</span><br><span class="line"></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer 模拟打印日志到屏幕：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'logs'</span>, exchange_type=<span class="string">'fanout'</span>)</span><br><span class="line"></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">queuename = result.method.queue</span><br><span class="line"><span class="comment">#绑定Exchange与queue</span></span><br><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] 模拟打印日志到屏幕 %r'</span> % (body,))</span><br><span class="line">    print(<span class="string">'[x] done'</span>)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=queuename)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer 模拟写入日志到磁盘：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'logs'</span>, exchange_type=<span class="string">'fanout'</span>)</span><br><span class="line"></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">queuename = result.method.queue</span><br><span class="line"><span class="comment">#绑定Exchange与queue</span></span><br><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] 模拟写入日志到磁盘 %r'</span> % (body,))</span><br><span class="line">    print(<span class="string">'[x] done'</span>)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=queuename)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>两个Consumer代码基本一样就是模拟打印print的文字不同而已，我们需要首先启动Consumer，如果先启动Producer是没有效果的，我们先启动一个Consumer，然后启动Producer程序，Producer会发送6条日志消息，由于我们设置了没发送一条消息休眠2秒钟，所以当发送了3条的时候，我们马上开启另外一个Consumer，可以从打印的日志看到，我们后开启的Consumer会从新日志开始接收。<br>打印的日志：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/b0dae8935cef840d3008.png" alt="img"><br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/4960a22d5328c6456eed.png" alt="img"><br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/a98e2727ff82b3e8286c.png" alt="img"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/29/rabbitmq-ackdurable/" rel="next" title="rabbitmq-消息确认机制与持久化存储">
+                <i class="fa fa-chevron-left"></i> rabbitmq-消息确认机制与持久化存储
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div id="vcomments"></div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/tiger.jpeg"
+                alt="tigerphz" />
+            
+              <p class="site-author-name" itemprop="name">tigerphz</p>
+              <p class="site-description motion-element" itemprop="description">哥在写寂寞</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tigerphz" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:191130620@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exchange转发器"><span class="nav-number">2.</span> <span class="nav-text">Exchange转发器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Temporary-queues（临时队列）"><span class="nav-number">3.</span> <span class="nav-text">Temporary queues（临时队列）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bindings（绑定）"><span class="nav-number">4.</span> <span class="nav-text">Bindings（绑定）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整实例"><span class="nav-number">5.</span> <span class="nav-text">完整实例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tigerphz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine@1.1.4/dist/Valine.min.js"></script>
+  <script type="text/javascript">
+    new Valine({
+        av: AV,
+        el: '#vcomments' ,
+        verify: false,
+        notify: false,
+        app_id: 'gJllSjilgzBkDFiRdaeSDve8-gzGzoHsz',
+        app_key: '5zSPujjcFN7QMh8atnnnvMJP',
+        placeholder: 'Leave a comment'
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
