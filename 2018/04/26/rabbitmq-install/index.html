@@ -88,7 +88,7 @@
 <meta property="og:description" content="安装 rabbitmq-server1sudo apt-get install rabbitmq-server 添加用户 添加用户设置用户名密码 1sudo rabbitmqctl add_user username password  将用户设置为管理员（只有管理员才能远程登录） 1sudo rabbitmqctl set_user_tags username administrator  设置">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/cd77cc3d682a9d1ecf6c.png">
-<meta property="og:updated_time" content="2018-04-27T07:21:14.757Z">
+<meta property="og:updated_time" content="2018-05-02T13:23:18.509Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ 安装">
 <meta name="twitter:description" content="安装 rabbitmq-server1sudo apt-get install rabbitmq-server 添加用户 添加用户设置用户名密码 1sudo rabbitmqctl add_user username password  将用户设置为管理员（只有管理员才能远程登录） 1sudo rabbitmqctl set_user_tags username administrator  设置">
@@ -367,7 +367,7 @@
 </li>
 </ul>
 <h2 id="安装RabbitMQ监控管理插件"><a href="#安装RabbitMQ监控管理插件" class="headerlink" title="安装RabbitMQ监控管理插件"></a>安装RabbitMQ监控管理插件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
-<p>启动插件后可以通过地址 <a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a> 登陆RabbitMQ管理页面，对RabbitMQ进行管理。</p>
+<p>启动插件后可以通过地址 <a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a> 登陆RabbitMQ管理页面，对RabbitMQ进行管理。<br><a id="more"></a></p>
 <h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><p>启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rabbitmq-server start</span><br></pre></td></tr></table></figure></p>
 <p>或<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-server –detached</span><br></pre></td></tr></table></figure></p>
 <p>关闭<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rabbitmq-server stop</span><br></pre></td></tr></table></figure></p>

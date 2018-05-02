@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/2e24fe18780f948a2f05.png">
 <meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/6c9d9887bc1358c060ca.png">
 <meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/13f7b02bd2f0c615c790.png">
-<meta property="og:updated_time" content="2018-04-28T02:03:50.452Z">
+<meta property="og:updated_time" content="2018-05-02T13:22:56.896Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rabbitmq 简介">
 <meta name="twitter:description" content="AMQP背景AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制，与2004年由摩根大通跟iMatrix开始着手该协议的开发，2006年AMQP规范发布，2007年，Rab">
@@ -367,7 +367,8 @@
 <li>Channel：如果每次访问RabbitMQ都建立一个Connection连接，消息量大的时候建立TCP Connection连接开销是非常大的，效率也比较低，Channel是在Connection内部建立的逻辑连接，如果应用程序支持多线程，每个线程通常会创建单独的Channel今昔通讯，AMQP method包含了 Channel Id 帮助客户端和Message Broker识别Channel，所以不同的Channel之间是安全隔离的，Channel作为轻量级的Connection极大的减少了操作系统建立TCP Connection的开销</li>
 <li>Exchange：message到达Broker的第一站，根据配置的分发规则，匹配查询表里的routing key，分发消息到匹配的的queue中，常用的类型有direct (point-to-point)，topic (publish-subscribe) and fanout (multicast)，topic类型的routing key支持*(匹配一个单词) #(匹配0个或者多个单词)两个通配符</li>
 <li>Queue：消息最终配存放的地方，等待被consumer取走，一个message可以被同时拷贝到多个queue中</li>
-<li>Binding：Exchange和queue之间的虚拟连接，binding中可以包含routing key。Binding信息被保存到exchange中的查询表中，用于message的分发依据</li>
+<li>Binding：Exchange和queue之间的虚拟连接，binding中可以包含routing key。Binding信息被保存到exchange中的查询表中，用于message的分发依据<a id="more"></a>
+</li>
 </ul>
 <h2 id="组件流向图"><a href="#组件流向图" class="headerlink" title="组件流向图"></a>组件流向图</h2><ul>
 <li><p>Producer Consumer<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/f7be0f84efe2402153d5.png" alt="img"></p>
