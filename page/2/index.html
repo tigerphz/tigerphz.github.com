@@ -82,7 +82,7 @@
 <meta name="description" content="哥在写寂寞">
 <meta property="og:type" content="website">
 <meta property="og:title" content="tigerphz&#39;s Notes">
-<meta property="og:url" content="http://tigerphz.com/index.html">
+<meta property="og:url" content="http://tigerphz.com/page/2/index.html">
 <meta property="og:site_name" content="tigerphz&#39;s Notes">
 <meta property="og:description" content="哥在写寂寞">
 <meta property="og:locale" content="zh-Hans">
@@ -118,7 +118,7 @@
 
 
 
-  <link rel="canonical" href="http://tigerphz.com/"/>
+  <link rel="canonical" href="http://tigerphz.com/page/2/"/>
 
 
 
@@ -296,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/01/rabbitmq-publishSubscribe/">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/01/04/docker-elk-create/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tigerphz">
@@ -315,7 +315,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/01/rabbitmq-publishSubscribe/" itemprop="url">rabbitmq-发布/订阅</a></h2>
+                <a class="post-title-link" href="/2018/01/04/docker-elk-create/" itemprop="url">docker下的elk环境搭建</a></h2>
         
 
         <div class="post-meta">
@@ -327,820 +327,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T15:14:19+08:00">
-                2018-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/05/01/rabbitmq-publishSubscribe/" class="leancloud_visitors" data-flag-title="rabbitmq-发布/订阅">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不知道大家注意到没，前面的文章我们发送消息的时候都是这么写的<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_declare(queue=<span class="string">'cache_hello'</span>)</span><br><span class="line">channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'cache_hello'</span>, body=message)</span><br></pre></td></tr></table></figure></p>
-<p>关注第一个和第二个参数，第一个参数exchange我们赋值的是空字符串，第二个参数outing_key我们赋值的’cache_hello’，这个是我们定义的queue的名字。<br>当我们给exchange赋值空字符串的时候，表示使用RabbitMQ Server的默认Exchange转发器，消息会根据我们指定的routing_key推送到与该值对应名字的消息队列中。<br>我们可以看看管理页面里RabbitMQ Server定义的默认Exchange的描述<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/e9ba8577e6dc673ad6f6.png" alt="img"><br>默认的消息队列是支持持久化的并且是Direct类型的转发器。Bindings栏的英文表示默认Exchange转发器可以隐式绑定到与routing_key的值相同名字的队列上，默认Exchange转发器不能进行显示绑定或者解绑操作，也不能进行删除操作。<br>我们之前的实例代码都是把消息推送到一个指定的queue队列中，接下来我们尝试使用“发布/订阅”把消息推送给多个队列，我们构建一个简单的日志系统来验证这种模式，Producer负责收集系统日志然后发出日志，Consumer负责接受日志并且打印日志，我们将构建两个Consumer，一个负责输出日志到屏幕，一个负责把日志写到磁盘上。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/05/01/rabbitmq-publishSubscribe/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/29/rabbitmq-ackdurable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/29/rabbitmq-ackdurable/" itemprop="url">rabbitmq-消息确认机制与持久化存储</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T12:46:05+08:00">
-                2018-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/29/rabbitmq-ackdurable/" class="leancloud_visitors" data-flag-title="rabbitmq-消息确认机制与持久化存储">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="ACK-消息确认机制"><a href="#ACK-消息确认机制" class="headerlink" title="ACK 消息确认机制"></a>ACK 消息确认机制</h2><p>上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还没有收到确认消息表示消息没有被成功处理。</p>
-<p>使用消息确认机制还能保证消息不丢失，Consumer成功处理消息后发送确认消息，RabbitMQ Server才会任务消息被成功处理，然后才会把消息标记为已完成从queue中删除，如果Consumer异常或者未发送确认消息，RabbitMQ则认为消息并没有成功被处理，后续会再发送给其他Consumer进行处理，直到收到对应的确认消息，这样就能保证消息不丢失，能被正真的处理。</p>
-<p>如果不使用确认机制，那么RabbitMQ Server 发送的消息Consumer接收以后，不管Consumer是否处理完成，直接把消息标记为完成从queue队列中删除。</p>
-<p>我们继续使用上面的公平分发里的Consumer代码来模拟一个处理过程中关闭程序，看下消息是否还保存再队列中，该代码里我们已经开启了手动消息确认机制(默认打开) ，然后回调函数的ch.basic_ack(delivery_tag=method.delivery_tag)这句代码表示确认消息。我们使用上一节开头提供的Producer代码发送一条消息，然后开启一个Consumer可以把休眠时间设置长一点10秒把，再任务未处理完成前关闭程序，然后到管理界面查看消息是否还存在。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/29/rabbitmq-ackdurable/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/28/rabbitmq-distribution/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/28/rabbitmq-distribution/" itemprop="url">rabbitmq-分发机制</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-28T20:23:26+08:00">
-                2018-04-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/28/rabbitmq-distribution/" class="leancloud_visitors" data-flag-title="rabbitmq-分发机制">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一节的最后部分展示了一个基本的RabbitMQ发送接收的Hello World程序，Porducer发送消息，Consumer订阅队列接受消息然后打印消息，但是在实际应用场景中可能更加复杂些，如此简单的发送接受并不能满足实际需求，有可能Consumer端会有耗时计算等情况存在，所以RabbitMQ Server需要有一定的发送机制来平衡每个Consumer的负载，还有消息如何持久化，如何保证消息投递成功不丢失等</p>
-<h2 id="分发机制"><a href="#分发机制" class="headerlink" title="分发机制"></a>分发机制</h2><p>我们先模拟下Consumer进行耗时操作，看看消息是如何分发的<br>Producer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'172.16.200.122'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">8</span>):</span><br><span class="line">    message = <span class="string">'hello world '</span> + str(num)</span><br><span class="line">    channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'hello'</span>, body=message)</span><br><span class="line">    print(<span class="string">" [x] Sent %r"</span> % (message,))</span><br><span class="line"></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/28/rabbitmq-distribution/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/27/rabbitmq-introduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/27/rabbitmq-introduce/" itemprop="url">rabbitmq 简介</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T21:24:27+08:00">
-                2018-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/27/rabbitmq-introduce/" class="leancloud_visitors" data-flag-title="rabbitmq 简介">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="AMQP背景"><a href="#AMQP背景" class="headerlink" title="AMQP背景"></a>AMQP背景</h2><p>AMQP，即Advanced Message Queuing Protocol,一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制，与2004年由摩根大通跟iMatrix开始着手该协议的开发，2006年AMQP规范发布，2007年，Rabbit公司基于AMQP标准开发的RabbtiMQ1.0发布，使用Erlang语言开发，Erlang语言由Ericson设计，专门为开发concurrent和distribution系统的一种语言。</p>
-<h2 id="AMQP基本概念"><a href="#AMQP基本概念" class="headerlink" title="AMQP基本概念"></a>AMQP基本概念</h2><p><img src="http://lc-gjllsjil.cn-n1.lcfile.com/c04a66fedc390099eabe.jpg" alt="img"></p>
-<ul>
-<li>Broker：接受和分发消息的应用，RabbitMQ Server 就是 Message Broker</li>
-<li>Virtual Host：出于多租户和安全因素的设计，把AMQP的基本组件划分到了一个个的虚拟分组中，当多个不同的用户使用同一个RabbitMQ Server提供的服务的时候，可以划分多个Virtual host，每个用户在自己的Virtual host创建Exchange/queue等等，起到隔离作用。</li>
-<li>Connection：Publisher/Consumer和Broker之间通过TCP连接，断开连接的操作只会在Client端，Broker不会断开，除非出现网络故障或者Broke服务异常</li>
-<li>Channel：如果每次访问RabbitMQ都建立一个Connection连接，消息量大的时候建立TCP Connection连接开销是非常大的，效率也比较低，Channel是在Connection内部建立的逻辑连接，如果应用程序支持多线程，每个线程通常会创建单独的Channel今昔通讯，AMQP method包含了 Channel Id 帮助客户端和Message Broker识别Channel，所以不同的Channel之间是安全隔离的，Channel作为轻量级的Connection极大的减少了操作系统建立TCP Connection的开销</li>
-<li>Exchange：message到达Broker的第一站，根据配置的分发规则，匹配查询表里的routing key，分发消息到匹配的的queue中，常用的类型有direct (point-to-point)，topic (publish-subscribe) and fanout (multicast)，topic类型的routing key支持*(匹配一个单词) #(匹配0个或者多个单词)两个通配符</li>
-<li>Queue：消息最终配存放的地方，等待被consumer取走，一个message可以被同时拷贝到多个queue中</li>
-<li>Binding：Exchange和queue之间的虚拟连接，binding中可以包含routing key。Binding信息被保存到exchange中的查询表中，用于message的分发依据
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/27/rabbitmq-introduce/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/26/rabbitmq-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/26/rabbitmq-install/" itemprop="url">RabbitMQ 安装</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-26T22:11:18+08:00">
-                2018-04-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/26/rabbitmq-install/" class="leancloud_visitors" data-flag-title="RabbitMQ 安装">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="安装-rabbitmq-server"><a href="#安装-rabbitmq-server" class="headerlink" title="安装 rabbitmq-server"></a>安装 rabbitmq-server</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rabbitmq-server</span><br></pre></td></tr></table></figure>
-<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><ul>
-<li><p>添加用户设置用户名密码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl add_user username password</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>将用户设置为管理员（只有管理员才能远程登录）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl set_user_tags username administrator</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>设置用户的读写等权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl set_permissions -p / username <span class="string">".*"</span> <span class="string">".*"</span> <span class="string">".*"</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="安装RabbitMQ监控管理插件"><a href="#安装RabbitMQ监控管理插件" class="headerlink" title="安装RabbitMQ监控管理插件"></a>安装RabbitMQ监控管理插件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
-<p>启动插件后可以通过地址 <a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a> 登陆RabbitMQ管理页面，对RabbitMQ进行管理。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/26/rabbitmq-install/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/01/08/docker-elk-two/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/08/docker-elk-two/" itemprop="url">elasticsearch 单机多实例部署</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-08T10:12:48+08:00">
-                2018-01-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-04T20:04:41+08:00">
+                2018-01-04
               </time>
             
 
@@ -1179,7 +367,7 @@
 
           
           
-             <span id="/2018/01/08/docker-elk-two/" class="leancloud_visitors" data-flag-title="elasticsearch 单机多实例部署">
+             <span id="/2018/01/04/docker-elk-create/" class="leancloud_visitors" data-flag-title="docker下的elk环境搭建">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1211,16 +399,362 @@
 
       
         
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  上一篇文章<a href="http://xixi624.com/2018/01/04/docker-elk-create/" target="_blank" rel="noopener">docker下的elk环境搭建</a>我们介绍了docker下的elk各个组件的部署，走通了从采集日志到查询日志的流程，但是我们之前部署的elasticsearch组件采用的单实例部署，这样并不能很好的利用系统资源，并且也不安全，如果仅有的一个实例出现了问题那么整个服务就瘫痪了，而且数据配置等都保存在docker容器中，这样也不利于我们管理维护，所以接下来我们就要解决这两个问题。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
-<li>elasticsearch 设置多个配置文件，一个实例对应一个配置文件</li>
-<li>使用docker的数据卷功能将服务器的路径映射到docker中，使elasticsearch的数据和配置直接保存到服务器中</li>
-</ul>
-<h2 id="实施步骤"><a href="#实施步骤" class="headerlink" title="实施步骤"></a>实施步骤</h2><h3 id="docker-容器启动"><a href="#docker-容器启动" class="headerlink" title="docker 容器启动"></a>docker 容器启动</h3><p>  我们使用数据卷功能将服务器的路径映射到我们要启动的docker容器内<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -p 5044:5044 -p 8080:80 -p 9200:9200 -p 9100:9100 -v /home/tiger/Downloads/elk:/home/tiger/elk -d elk:ubuntu /run.sh</span></span><br></pre></td></tr></table></figure></p>
-<p>  -v 参数就是启用数据卷配置，/home/tiger/Downloads/elk:/home/tiger/elk 表示把服务器的/home/tiger/Downloads/elk目录映射到docker容器的/home/tiger/elk目录上，那么你在容器内访问/home/tiger/elk里的内容实际上就是在访问服务器的/home/tiger/Downloads/elk内的内容。<br>
+          <h2 id="elk结构图"><a href="#elk结构图" class="headerlink" title="elk结构图"></a>elk结构图</h2><p>  先来张elk的结构图，对我们将搭建的环境有个基本的了解</p>
+<p><img src="http://blog.topspeedsnail.com/wp-content/uploads/2016/05/Screen-Shot-2016-05-06-at-11.17.12.png" alt=""></p>
+<p>  用户通过Nginx反向代理请求到Kibana进行Web操作，Kibana封装了Elasticsearch，提供Web接口进行可视化操作，Logstash进行日志收集，将收集推送给Elasticsearch存储，由于Logstash比较重占用资源比较可观，所以我们使用轻量级的Filebeat在客户服务器上进行日志收集然后推送给Logstash，Logstash再推送给Elasticsearch存储，如果日志量比较大，可能会对FIlebeat到Logstash这个管道处理产生比较大负荷，所以我们可以在这部分的中间插入一个队列进行缓冲，比如redis或者kafka。</p>
+<h2 id="各个组件安装"><a href="#各个组件安装" class="headerlink" title="各个组件安装"></a>各个组件安装</h2><p>  接下来我们就在docker里安装各个用到的组件，由于我自己的电脑使用的ubuntu系统比较熟悉，所以我们还是使用ubuntu的环境，由于有几个组件是基于java开发的，所以运行需要java环境，需要jdk8以上，如何安装java环境这里就不操作了。<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/01/08/docker-elk-two/#more" rel="contents">
+            <a class="btn" href="/2018/01/04/docker-elk-create/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2017/12/17/GithubPageUsersAcquire/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/17/GithubPageUsersAcquire/" itemprop="url">爬取github中创建静态站点的用户信息</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-17T21:57:21+08:00">
+                2017-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python爬虫/" itemprop="url" rel="index">
+                    <span itemprop="name">python爬虫</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/17/GithubPageUsersAcquire/" class="leancloud_visitors" data-flag-title="爬取github中创建静态站点的用户信息">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h2><p>  最近在[GitHub Pages]:(<a href="https://pages.github.com/" target="_blank" rel="noopener">https://pages.github.com/</a>) 上使用hexo创建了一个静态博客，觉得GitHub提供的这个服务蛮有意思的，所以突发奇想想看看到底有多少用户使用GItHub Pages创建了自己的静态站点，所以就写了个python的小爬虫想爬一爬GitHub的用户数据。<br>  经过搜索了解到GitHub提供非常好用的[API]:(<a href="https://developer.github.com/v3/" target="_blank" rel="noopener">https://developer.github.com/v3/</a>) ，可以非常方便的获取用户各种信息。</p>
+<h2 id="使用工具"><a href="#使用工具" class="headerlink" title="使用工具"></a>使用工具</h2><ul>
+<li>操作系统 ubuntu16.04</li>
+<li>语言python3</li>
+<li>爬虫框架pyspider，该框架是国人开发的强大的开源爬虫框架</li>
+<li>代理工具squid，由于github对同一个ip调用api的次数有限制，超过次数会被限制访问，所以需要代理访问。<h2 id="爬取思路"><a href="#爬取思路" class="headerlink" title="爬取思路"></a>爬取思路</h2><h3 id="获取用户个人信息"><a href="#获取用户个人信息" class="headerlink" title="获取用户个人信息"></a>获取用户个人信息</h3>REST API <a href="https://api.github.com/users/{username}" target="_blank" rel="noopener">https://api.github.com/users/{username}</a><br>通过传入用户登录名就可以获取到该用户的个人信息，例如调用<a href="https://api.github.com/users/tigerphz" target="_blank" rel="noopener">https://api.github.com/users/tigerphz</a> 获取到返回的json数据，下面仅列出重点数据
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/17/GithubPageUsersAcquire/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2017/12/11/docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/11/docker/" itemprop="url">Docker 安装</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T22:06:20+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/11/docker/" class="leancloud_visitors" data-flag-title="Docker 安装">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Docker-版本简介"><a href="#Docker-版本简介" class="headerlink" title="Docker 版本简介"></a>Docker 版本简介</h2><p>  Docker是基于Go语言实现的开源容器项目，诞生于2013年初，最初发起者是dotCloud公司。Docker自开源后收到广泛的关注和讨论，逐渐形成了围绕Docker的生态圈，dotCloud公司后来改名Dockker Inc，专注于Docker相关的技术和产品。Docker的主要目标是’Build,Ship and Run Any App,Anywhere’，即通过对应用组件的封装、分发、不熟、运行等生命周期的管理，达到应用组件级别的“一次封装，到处运行”，Docker基于linux的多项开源技术提供高效、敏捷和轻量级的容器方案。<br>  目前Docker分为了两个版本Community Edition (CE) 和 Enterprise Edition (EE)社区版（CE）是免费的，面向开发者或者小团队使用的，用户可以选择stable(更新发布较慢) 和 edge(每个月都会发布新特性) 两个版本。<br>  企业版(EE)是付费使用的</p>
+<h3 id="社区版（CE）"><a href="#社区版（CE）" class="headerlink" title="社区版（CE）"></a>社区版（CE）</h3><p>  Docker CE是免费的Docker产品的新名字，是为开发人员或者小团队创建基于容器的应用，Docker CE有两个更新版本</p>
+<ul>
+<li>Stable 每季度发布，适用于希望追求稳定的用户，提供4个月支持</li>
+<li>Edge   每个月发布，主要面向喜欢尝试新功能的用户，提供一个月支持</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20170511214722040" alt=""></p>
+<h3 id="企业版-EE"><a href="#企业版-EE" class="headerlink" title="企业版(EE)"></a>企业版(EE)</h3><p>Docker EE是专门为企业的发展和IT团队创建的，Docker EE为企业提供最安全的容器平台，Docker EE提供三个服务层次：</p>
+<table>
+<thead>
+<tr>
+<th>服务层级</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td>包含用于认证基础设施的Docker平台Docker公司的支持经过 认证的、来自Docker    Store的容器与插件</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>添加高级镜像与容器管理LDAP/AD用户集成基于角色的访问控制(Docker Datacenter)</td>
+</tr>
+<tr>
+<td>Advanced</td>
+<td>添加Docker安全扫描连续漏洞监控</td>
+</tr>
+</tbody>
+</table>
+<p>每个Docker EE版本都享受为期一年的支持跟维护期，在此期间接受安全与关键问题修正。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/11/docker/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1262,7 +796,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
   </nav>
 
 
