@@ -296,6 +296,166 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/03/rabbitmq-directrouting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/03/rabbitmq-directrouting/" itemprop="url">rabbitmq-routingkey路由</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-03T15:20:13+08:00">
+                2018-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/03/rabbitmq-directrouting/" class="leancloud_visitors" data-flag-title="rabbitmq-routingkey路由">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一节我们介绍了发布订阅模式使用Binding把Exchange转发器与queue队列联系起来了，使得Exchange知道要把消息发送到那些queue中，但是Exchange会把所有的消息都发送到与之关联的queue队列中，如果我们的queue只想接收跟它绑定的Exchange的某一类消息，能否实现呢？</p>
+<h2 id="Direct-Bindings-routing-key"><a href="#Direct-Bindings-routing-key" class="headerlink" title="Direct Bindings routing key"></a>Direct Bindings routing key</h2><p>上一节中我们我们介绍的Binding是这样写的<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename)</span><br></pre></td></tr></table></figure></p>
+<p>其实后面还可以增加一个参数 routing_key=’error’<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename, routing_key=<span class="string">'orange'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这样与名字叫logs的Exchange转发器绑定的该queue队列，现在只会接收到orange类型的消息了，Exchange转发器发送消息的时候会根据发送消息时填的routing_key的值找到完全比配的Binding是填写的routing_key的值的队列，然后把消息发送到这些队列中去。<br>routing_key参数只对direct与topic类型的Exchange适用，fanout类型的Exchange使用routing_key不起作用。<br><img src="http://www.rabbitmq.com/img/tutorials/direct-exchange.png" alt="img"><br>如何我们可以看出类型为direct的Exchange X与Q1,Q2队列绑定了，Q1的routing_key是 orange，Q2的routing_key是black,green两类消息，当Producer推送消息的routing_key是orange的时候，Exchagne X会把消息推送给Q1,如果Producer推送消息的routing_key是black或者green时会把消息推送给Q2，如果不是orange，black，green那么消息就会丢弃不会推送给这两个queue。<br>同一个队列如何指定多个不同的routing_key呢？<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/03/rabbitmq-directrouting/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/01/rabbitmq-publishSubscribe/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1095,169 +1255,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/01/08/docker-elk-two/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/08/docker-elk-two/" itemprop="url">elasticsearch 单机多实例部署</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-08T10:12:48+08:00">
-                2018-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/01/08/docker-elk-two/" class="leancloud_visitors" data-flag-title="elasticsearch 单机多实例部署">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  上一篇文章<a href="http://xixi624.com/2018/01/04/docker-elk-create/" target="_blank" rel="noopener">docker下的elk环境搭建</a>我们介绍了docker下的elk各个组件的部署，走通了从采集日志到查询日志的流程，但是我们之前部署的elasticsearch组件采用的单实例部署，这样并不能很好的利用系统资源，并且也不安全，如果仅有的一个实例出现了问题那么整个服务就瘫痪了，而且数据配置等都保存在docker容器中，这样也不利于我们管理维护，所以接下来我们就要解决这两个问题。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
-<li>elasticsearch 设置多个配置文件，一个实例对应一个配置文件</li>
-<li>使用docker的数据卷功能将服务器的路径映射到docker中，使elasticsearch的数据和配置直接保存到服务器中</li>
-</ul>
-<h2 id="实施步骤"><a href="#实施步骤" class="headerlink" title="实施步骤"></a>实施步骤</h2><h3 id="docker-容器启动"><a href="#docker-容器启动" class="headerlink" title="docker 容器启动"></a>docker 容器启动</h3><p>  我们使用数据卷功能将服务器的路径映射到我们要启动的docker容器内<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -p 5044:5044 -p 8080:80 -p 9200:9200 -p 9100:9100 -v /home/tiger/Downloads/elk:/home/tiger/elk -d elk:ubuntu /run.sh</span></span><br></pre></td></tr></table></figure></p>
-<p>  -v 参数就是启用数据卷配置，/home/tiger/Downloads/elk:/home/tiger/elk 表示把服务器的/home/tiger/Downloads/elk目录映射到docker容器的/home/tiger/elk目录上，那么你在容器内访问/home/tiger/elk里的内容实际上就是在访问服务器的/home/tiger/Downloads/elk内的内容。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/08/docker-elk-two/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1312,7 +1309,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

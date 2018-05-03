@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="RabbitMQ," />
 
 
 
@@ -79,17 +79,26 @@
 
 
 
-<meta name="description" content="哥在写寂寞">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://tigerphz.com/about/index.html">
+<meta name="description" content="前言上一节我们介绍了发布订阅模式使用Binding把Exchange转发器与queue队列联系起来了，使得Exchange知道要把消息发送到那些queue中，但是Exchange会把所有的消息都发送到与之关联的queue队列中，如果我们的queue只想接收跟它绑定的Exchange的某一类消息，能否实现呢？ Direct Bindings routing key上一节中我们我们介绍的Binding">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq-routingkey路由">
+<meta property="og:url" content="http://tigerphz.com/2018/05/03/rabbitmq-directrouting/index.html">
 <meta property="og:site_name" content="tigerphz&#39;s Notes">
-<meta property="og:description" content="哥在写寂寞">
+<meta property="og:description" content="前言上一节我们介绍了发布订阅模式使用Binding把Exchange转发器与queue队列联系起来了，使得Exchange知道要把消息发送到那些queue中，但是Exchange会把所有的消息都发送到与之关联的queue队列中，如果我们的queue只想接收跟它绑定的Exchange的某一类消息，能否实现呢？ Direct Bindings routing key上一节中我们我们介绍的Binding">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-10T12:16:13.000Z">
+<meta property="og:image" content="http://www.rabbitmq.com/img/tutorials/direct-exchange.png">
+<meta property="og:image" content="http://www.rabbitmq.com/img/tutorials/direct-exchange-multiple.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/6f173b12001704177bd4.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/3c547c4c62fea2e68d00.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/0a07cad82445e9aa709e.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/6e320facbefc49d70cb0.png">
+<meta property="og:image" content="http://lc-gjllsjil.cn-n1.lcfile.com/ac96f86a65a960e407ca.png">
+<meta property="og:updated_time" content="2018-05-03T09:17:44.948Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="哥在写寂寞">
+<meta name="twitter:title" content="rabbitmq-routingkey路由">
+<meta name="twitter:description" content="前言上一节我们介绍了发布订阅模式使用Binding把Exchange转发器与queue队列联系起来了，使得Exchange知道要把消息发送到那些queue中，但是Exchange会把所有的消息都发送到与之关联的queue队列中，如果我们的queue只想接收跟它绑定的Exchange的某一类消息，能否实现呢？ Direct Bindings routing key上一节中我们我们介绍的Binding">
+<meta name="twitter:image" content="http://www.rabbitmq.com/img/tutorials/direct-exchange.png">
 
 
 
@@ -119,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://tigerphz.com/about/"/>
+  <link rel="canonical" href="http://tigerphz.com/2018/05/03/rabbitmq-directrouting/"/>
 
 
 
 
 
-  <title>about | tigerphz's Notes</title>
+  <title>rabbitmq-routingkey路由 | tigerphz's Notes</title>
   
 
 
@@ -284,33 +293,188 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/03/rabbitmq-directrouting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h2 class="post-title" itemprop="name headline">about</h2>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
+          <h2 class="post-title" itemprop="name headline">rabbitmq-routingkey路由</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-03T15:20:13+08:00">
+                2018-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-      </div>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/03/rabbitmq-directrouting/" class="leancloud_visitors" data-flag-title="rabbitmq-routingkey路由">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一节我们介绍了发布订阅模式使用Binding把Exchange转发器与queue队列联系起来了，使得Exchange知道要把消息发送到那些queue中，但是Exchange会把所有的消息都发送到与之关联的queue队列中，如果我们的queue只想接收跟它绑定的Exchange的某一类消息，能否实现呢？</p>
+<h2 id="Direct-Bindings-routing-key"><a href="#Direct-Bindings-routing-key" class="headerlink" title="Direct Bindings routing key"></a>Direct Bindings routing key</h2><p>上一节中我们我们介绍的Binding是这样写的<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename)</span><br></pre></td></tr></table></figure></p>
+<p>其实后面还可以增加一个参数 routing_key=’error’<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename, routing_key=<span class="string">'orange'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这样与名字叫logs的Exchange转发器绑定的该queue队列，现在只会接收到orange类型的消息了，Exchange转发器发送消息的时候会根据发送消息时填的routing_key的值找到完全比配的Binding是填写的routing_key的值的队列，然后把消息发送到这些队列中去。<br>routing_key参数只对direct与topic类型的Exchange适用，fanout类型的Exchange使用routing_key不起作用。<br><img src="http://www.rabbitmq.com/img/tutorials/direct-exchange.png" alt="img"><br>如何我们可以看出类型为direct的Exchange X与Q1,Q2队列绑定了，Q1的routing_key是 orange，Q2的routing_key是black,green两类消息，当Producer推送消息的routing_key是orange的时候，Exchagne X会把消息推送给Q1,如果Producer推送消息的routing_key是black或者green时会把消息推送给Q2，如果不是orange，black，green那么消息就会丢弃不会推送给这两个queue。<br>同一个队列如何指定多个不同的routing_key呢？<br><a id="more"></a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename, routing_key=<span class="string">'green'</span>)</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'logs'</span>, queue=queuename, routing_key=<span class="string">'black'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>queue_bind的时候指定不同的routing_key就可以了。</p>
+<h2 id="Multiple-Bindings-routing-key"><a href="#Multiple-Bindings-routing-key" class="headerlink" title="Multiple Bindings routing key"></a>Multiple Bindings routing key</h2><p><img src="http://www.rabbitmq.com/img/tutorials/direct-exchange-multiple.png" alt="img"><br>多个queue使用相同的routing_key继续绑定也时可以的,如图类型为direct的Exchagne X与Q1,Q2队列绑定了，这两个队列的routing_key都时black,所以当Producer推送的消息的routing_key是black的时候，会同时推送给Q1,Q2队列，其他routing_key不是black的消息会丢弃掉。</p>
+<h2 id="Publish-Message"><a href="#Publish-Message" class="headerlink" title="Publish Message"></a>Publish Message</h2><p>发送消息的时候跟之前的代码类似，只是我们需要多加要给routing_key参数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义direct类型的exchagne</span></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'logs'</span>, exchange_type=<span class="string">'direct'</span>)</span><br><span class="line"><span class="comment">#发送消息的时候指定routing_key</span></span><br><span class="line">channel.basic_publish(exchange=<span class="string">'logs'</span>, routing_key=<span class="string">'orange'</span>, body=message)</span><br></pre></td></tr></table></figure></p>
+<h2 id="完整实例"><a href="#完整实例" class="headerlink" title="完整实例"></a>完整实例</h2><p>Producer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'direct_logs'</span>, exchange_type=<span class="string">'direct'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">7</span>):</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">if</span> num &lt;= <span class="number">2</span>:</span><br><span class="line">        severity = <span class="string">'orange'</span></span><br><span class="line">    <span class="keyword">elif</span> num &lt;= <span class="number">4</span>:</span><br><span class="line">        severity = <span class="string">'black'</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        severity = <span class="string">'green'</span></span><br><span class="line"></span><br><span class="line">    message = <span class="string">'send logs routing_key=%s'</span> % (severity,)</span><br><span class="line">    channel.basic_publish(exchange=<span class="string">'direct_logs'</span>, routing_key=severity, body=message,</span><br><span class="line">                          properties=pika.BasicProperties(delivery_mode=<span class="number">2</span>))</span><br><span class="line">    print(<span class="string">" [x] Sent %r"</span> % (message,))</span><br><span class="line"></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer1 routing_key为orange<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'direct_logs'</span>, exchange_type=<span class="string">'direct'</span>)</span><br><span class="line"></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">queuename = result.method.queue</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'direct_logs'</span>, queue=queuename, routing_key=<span class="string">'orange'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] receive %r'</span> % (body,))</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    print(<span class="string">'[x] done'</span>)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=queuename)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer2 routing_keyi为green和black<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'direct_logs'</span>, exchange_type=<span class="string">'direct'</span>)</span><br><span class="line"></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">queuename = result.method.queue</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'direct_logs'</span>, queue=queuename, routing_key=<span class="string">'green'</span>)</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'direct_logs'</span>, queue=queuename, routing_key=<span class="string">'black'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] receive %r'</span> % (body,))</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    print(<span class="string">'[x] done'</span>)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=queuename)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>打印的日志：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/6f173b12001704177bd4.png" alt="img"><br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/3c547c4c62fea2e68d00.png" alt="img"><br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/0a07cad82445e9aa709e.png" alt="img"></p>
+<p>通过管理界面查看Exchange与队列的Bindings关系<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/6e320facbefc49d70cb0.png" alt="img"><br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/ac96f86a65a960e407ca.png" alt="img"></p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/01/rabbitmq-publishSubscribe/" rel="next" title="rabbitmq-发布/订阅">
+                <i class="fa fa-chevron-left"></i> rabbitmq-发布/订阅
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -345,8 +509,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -426,6 +599,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Direct-Bindings-routing-key"><span class="nav-number">2.</span> <span class="nav-text">Direct Bindings routing key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multiple-Bindings-routing-key"><span class="nav-number">3.</span> <span class="nav-text">Multiple Bindings routing key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Publish-Message"><span class="nav-number">4.</span> <span class="nav-text">Publish Message</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整实例"><span class="nav-number">5.</span> <span class="nav-text">完整实例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
