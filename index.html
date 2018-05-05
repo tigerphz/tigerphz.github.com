@@ -296,6 +296,189 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/05/rabbitmq-topicrouting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/05/rabbitmq-topicrouting/" itemprop="url">rabbitmq-topicrouting</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T16:42:07+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/05/rabbitmq-topicrouting/" class="leancloud_visitors" data-flag-title="rabbitmq-topicrouting">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一节我们介绍了使用routingkey进行消息路由，通过使用direct类型的Exchange转发器与rout_key参数来做到匹配推送。<br><img src="http://www.rabbitmq.com/img/tutorials/direct-exchange.png" alt="img"><br>如上图所示，我们使用的orange，green，black都属于颜色类别，如果我们衍生一点，假定我们现在要做一个关于动物信息收集的日志系统，动物属性有三类</p>
+<ul>
+<li>行为：lazy，lively，quietness</li>
+<li>颜色：orange，green，black</li>
+<li>类型：rabbit，tiger，bird</li>
+</ul>
+<p>我们规定使用[行为.颜色.类型]中间使用点符合分割，来表示某种类型的信息，现在Producer可以组合这三类表示一种信息类型进行发送比如lazy.orange.rabbit或者lazy.green.tiger等等，那么我们的queue又该如何操作才能接收到它关心的数据呢？<br>这三类属性自由组合的数量多达3*3*3种，如果我们还是沿用上一节的Binding方式，设置好全部我们关心的消息类型显然是很麻烦的。假设我们的queue关心动物属性是颜色和行为的消息，难道要我们写很多次的queue_bind，把全部关心的消息类型都binding一次？</p>
+<h2 id="Topic-Exchange"><a href="#Topic-Exchange" class="headerlink" title="Topic Exchange"></a>Topic Exchange</h2><p>对于上面的问题，我们需要一个更加负责的转发器就是Topic Exchange主题转发器<br><img src="http://www.rabbitmq.com/img/tutorials/python-five.png" alt="img"><br>topic类型的Exchagne可以放置任何的值作为routing_key，但是长度以及格式上有所限制，必须是’.’符号分割，比如上面的lazy.orange.rabbit或者lazy.green.tiger,还有长度不能超过225bytes。<br>routing_key可以使用两个特殊字符进行模糊匹配</p>
+<ul>
+<li>* (星号) 代表任意 一个单词</li>
+<li># (hash) 0个或者多个单词</li>
+</ul>
+<p>现在我们使用topic类型的Exchange来完成我们上面提出的复杂消息的推送接收的问题。Producer发送消息依然需要设置routing_key，对于行为，颜色，类型这三类动物属性，我们的routing_key可以是类似lazy.orange.rabbit或者lazy.green.tiger这样的格式。<br>我们使用两个queue队列与Exchange进行绑定 ，Q1的routing_key是”*.orange.*“，Q2的routing_key是“*.*.rabbit”与“lazy.#”</p>
+<ul>
+<li>Q1对所有orange颜色的动物感兴趣</li>
+<li>Q2对所有的rabbits动物和所有的lazy行为感兴趣</li>
+</ul>
+<p>举例：</p>
+<ul>
+<li>如果发送消息时填写的routing_key是lazy.orange.rabbit，那么exchange会把该消息转发给Q1,Q2</li>
+<li>如果发送消息时填写的routing_key是lazy.green.tiger，那么exchange会把消息转发给Q2</li>
+<li>如果发送消息时填写的routing_key是quietness.orange.tiger，那么exchange会把消息转发给Q1</li>
+<li>如果发送消息时填写的routing_key是quietness.black.rabbit，那么exchange会把消息转发给Q2，可以看到两个binding都匹配到了，但是也只会发送一次</li>
+<li>如果发送消息时填写的routing_key是black.rabbit，那么exchange找不到与之binding的queue队列，因为这个routing_key只写了两个单词，没有与之匹配的binding的routing_key存在，除非写成<br>lazy.orange或者lazy，那么可以匹配到’lazy.#‘也就是Q2,因为#可以匹配到零个或者多个单词</li>
+</ul>
+<h2 id="完整实例"><a href="#完整实例" class="headerlink" title="完整实例"></a>完整实例</h2><p>Producer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'topic_logs'</span>, exchange_type=<span class="string">'topic'</span>)</span><br><span class="line"></span><br><span class="line">behaviors = [<span class="string">'lazy'</span>, <span class="string">'lively'</span>, <span class="string">'quietness'</span>]</span><br><span class="line">colors = [<span class="string">'orange'</span>, <span class="string">'green'</span>, <span class="string">'black'</span>]</span><br><span class="line">types = [<span class="string">'rabbit'</span>, <span class="string">'tiger'</span>, <span class="string">'bird'</span>]</span><br><span class="line"></span><br><span class="line">index = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> b <span class="keyword">in</span> behaviors:</span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> colors:</span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> types:</span><br><span class="line">            severity = <span class="string">'%s.%s.%s'</span> % (b, c, t)</span><br><span class="line">            message = <span class="string">'send logs routing_key=%s'</span> % (severity,)</span><br><span class="line">            channel.basic_publish(exchange=<span class="string">'topic_logs'</span>, routing_key=severity, body=message,</span><br><span class="line">                                  properties=pika.BasicProperties(delivery_mode=<span class="number">2</span>))</span><br><span class="line">            print(<span class="string">" [x] Sent %r"</span> % (message,))</span><br><span class="line">            index += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"send message num is %d"</span> % (index,))</span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer binding Q1<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'topic_logs'</span>, exchange_type=<span class="string">'topic'</span>)</span><br><span class="line"></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">queuename = result.method.queue</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'topic_logs'</span>, queue=queuename, routing_key=<span class="string">'*.orange.*'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Q1 Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] receive %r'</span> % (body,))</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    print(<span class="string">'[x] done'</span>)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=queuename)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<p>Consumer binding Q1<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'192.168.164.128'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.exchange_declare(exchange=<span class="string">'topic_logs'</span>, exchange_type=<span class="string">'topic'</span>)</span><br><span class="line"></span><br><span class="line">result = channel.queue_declare(exclusive=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">queuename = result.method.queue</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'topic_logs'</span>, queue=queuename, routing_key=<span class="string">'*.*.rabbit'</span>)</span><br><span class="line">channel.queue_bind(exchange=<span class="string">'topic_logs'</span>, queue=queuename, routing_key=<span class="string">'lazy.#'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">' [*] Q2 Waiting for messages. To exit press CTRL+C'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">'[x] receive %r'</span> % (body,))</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    print(<span class="string">'[x] done'</span>)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">channel.basic_consume(callback, queue=queuename)</span><br><span class="line"></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure></p>
+<h2 id="打印日志"><a href="#打印日志" class="headerlink" title="打印日志"></a>打印日志</h2><p>Producer：<br><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"> [x] Sent 'send logs routing_key=lazy.orange.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.orange.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.orange.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.green.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.green.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.green.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.black.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.black.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=lazy.black.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.orange.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.orange.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.orange.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.green.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.green.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.green.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.black.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.black.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=lively.black.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.orange.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.orange.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.orange.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.green.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.green.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.green.bird'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.black.rabbit'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.black.tiger'</span><br><span class="line"> [x] Sent 'send logs routing_key=quietness.black.bird'</span><br><span class="line">send message num is 27</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>Consumer binding Q1<br><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[*] Q1 Waiting for messages. To exit press CTRL+C</span><br><span class="line">[x] receive b'send logs routing_key=lazy.orange.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.orange.tiger'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.orange.bird'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lively.orange.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lively.orange.tiger'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lively.orange.bird'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=quietness.orange.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=quietness.orange.tiger'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=quietness.orange.bird'</span><br><span class="line">[x] done</span><br></pre></td></tr></table></figure></p>
+<p>Consumer binding Q2<br><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[*] Q2 Waiting for messages. To exit press CTRL+C</span><br><span class="line">[x] receive b'send logs routing_key=lazy.orange.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.orange.tiger'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.orange.bird'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.green.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.green.tiger'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.green.bird'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.black.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.black.tiger'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lazy.black.bird'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lively.orange.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lively.green.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=lively.black.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=quietness.orange.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=quietness.green.rabbit'</span><br><span class="line">[x] done</span><br><span class="line">[x] receive b'send logs routing_key=quietness.black.rabbit'</span><br><span class="line">[x] done</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/03/rabbitmq-directrouting/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1085,176 +1268,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/26/rabbitmq-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/26/rabbitmq-install/" itemprop="url">RabbitMQ 安装</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-26T22:11:18+08:00">
-                2018-04-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/26/rabbitmq-install/" class="leancloud_visitors" data-flag-title="RabbitMQ 安装">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="安装-rabbitmq-server"><a href="#安装-rabbitmq-server" class="headerlink" title="安装 rabbitmq-server"></a>安装 rabbitmq-server</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rabbitmq-server</span><br></pre></td></tr></table></figure>
-<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><ul>
-<li><p>添加用户设置用户名密码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl add_user username password</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>将用户设置为管理员（只有管理员才能远程登录）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl set_user_tags username administrator</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>设置用户的读写等权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl set_permissions -p / username <span class="string">".*"</span> <span class="string">".*"</span> <span class="string">".*"</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="安装RabbitMQ监控管理插件"><a href="#安装RabbitMQ监控管理插件" class="headerlink" title="安装RabbitMQ监控管理插件"></a>安装RabbitMQ监控管理插件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
-<p>启动插件后可以通过地址 <a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a> 登陆RabbitMQ管理页面，对RabbitMQ进行管理。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/26/rabbitmq-install/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1309,7 +1322,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
