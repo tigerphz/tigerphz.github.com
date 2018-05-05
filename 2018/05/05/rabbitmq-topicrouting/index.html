@@ -82,16 +82,16 @@
 <meta name="description" content="前言上一节我们介绍了使用routingkey进行消息路由，通过使用direct类型的Exchange转发器与rout_key参数来做到匹配推送。如上图所示，我们使用的orange，green，black都属于颜色类别，如果我们衍生一点，假定我们现在要做一个关于动物信息收集的日志系统，动物属性有三类  行为：lazy，lively，quietness 颜色：orange，green，black 类型">
 <meta name="keywords" content="RabbitMQ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="rabbitmq-topicrouting">
+<meta property="og:title" content="rabbitmq-主题路由">
 <meta property="og:url" content="http://tigerphz.com/2018/05/05/rabbitmq-topicrouting/index.html">
 <meta property="og:site_name" content="tigerphz&#39;s Notes">
 <meta property="og:description" content="前言上一节我们介绍了使用routingkey进行消息路由，通过使用direct类型的Exchange转发器与rout_key参数来做到匹配推送。如上图所示，我们使用的orange，green，black都属于颜色类别，如果我们衍生一点，假定我们现在要做一个关于动物信息收集的日志系统，动物属性有三类  行为：lazy，lively，quietness 颜色：orange，green，black 类型">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://www.rabbitmq.com/img/tutorials/direct-exchange.png">
 <meta property="og:image" content="http://www.rabbitmq.com/img/tutorials/python-five.png">
-<meta property="og:updated_time" content="2018-05-05T14:21:35.911Z">
+<meta property="og:updated_time" content="2018-05-05T15:08:52.694Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rabbitmq-topicrouting">
+<meta name="twitter:title" content="rabbitmq-主题路由">
 <meta name="twitter:description" content="前言上一节我们介绍了使用routingkey进行消息路由，通过使用direct类型的Exchange转发器与rout_key参数来做到匹配推送。如上图所示，我们使用的orange，green，black都属于颜色类别，如果我们衍生一点，假定我们现在要做一个关于动物信息收集的日志系统，动物属性有三类  行为：lazy，lively，quietness 颜色：orange，green，black 类型">
 <meta name="twitter:image" content="http://www.rabbitmq.com/img/tutorials/direct-exchange.png">
 
@@ -129,7 +129,7 @@
 
 
 
-  <title>rabbitmq-topicrouting | tigerphz's Notes</title>
+  <title>rabbitmq-主题路由 | tigerphz's Notes</title>
   
 
 
@@ -317,7 +317,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">rabbitmq-topicrouting</h2>
+          <h2 class="post-title" itemprop="name headline">rabbitmq-主题路由</h2>
         
 
         <div class="post-meta">
@@ -369,7 +369,7 @@
 
           
           
-             <span id="/2018/05/05/rabbitmq-topicrouting/" class="leancloud_visitors" data-flag-title="rabbitmq-topicrouting">
+             <span id="/2018/05/05/rabbitmq-topicrouting/" class="leancloud_visitors" data-flag-title="rabbitmq-主题路由">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -406,7 +406,7 @@
 <li>颜色：orange，green，black</li>
 <li>类型：rabbit，tiger，bird</li>
 </ul>
-<p>我们规定使用[行为.颜色.类型]中间使用点符合分割，来表示某种类型的信息，现在Producer可以组合这三类表示一种信息类型进行发送比如lazy.orange.rabbit或者lazy.green.tiger等等，那么我们的queue又该如何操作才能接收到它关心的数据呢？<br>这三类属性自由组合的数量多达3*3*3种，如果我们还是沿用上一节的Binding方式，设置好全部我们关心的消息类型显然是很麻烦的。假设我们的queue关心动物属性是颜色和行为的消息，难道要我们写很多次的queue_bind，把全部关心的消息类型都binding一次？</p>
+<p>我们规定使用[行为.颜色.类型]中间使用点符合分割，来表示某种类型的信息，现在Producer可以组合这三类表示一种信息类型进行发送比如lazy.orange.rabbit或者lazy.green.tiger等等，那么我们的queue又该如何操作才能接收到它关心的数据呢？<br>这三类属性自由组合的数量多达3*3*3种，如果我们还是沿用上一节的Binding方式，设置好全部我们关心的消息类型显然是很麻烦的。假设我们的queue关心动物属性是颜色和行为的消息，难道要我们写很多次的queue_bind，把全部关心的消息类型都binding一次？<br><a id="more"></a></p>
 <h2 id="Topic-Exchange"><a href="#Topic-Exchange" class="headerlink" title="Topic Exchange"></a>Topic Exchange</h2><p>对于上面的问题，我们需要一个更加负责的转发器就是Topic Exchange主题转发器<br><img src="http://www.rabbitmq.com/img/tutorials/python-five.png" alt="img"><br>topic类型的Exchagne可以放置任何的值作为routing_key，但是长度以及格式上有所限制，必须是’.’符号分割，比如上面的lazy.orange.rabbit或者lazy.green.tiger,还有长度不能超过225bytes。<br>routing_key可以使用两个特殊字符进行模糊匹配</p>
 <ul>
 <li>* (星号) 代表任意 一个单词</li>
