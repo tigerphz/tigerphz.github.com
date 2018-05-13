@@ -8,7 +8,9 @@
         <category>linux常见问题</category>
       </categories>
       <tags>
-        <tag>linux ubuntu fsck</tag>
+        <tag>linux</tag>
+        <tag>ubuntu</tag>
+        <tag>fsck</tag>
       </tags>
   </entry>
   <entry>
@@ -63,7 +65,7 @@
         <category>RabbitMQ入门</category>
       </categories>
       <tags>
-        <tag>RabbitMQ入门</tag>
+        <tag>RabbitMQ</tag>
       </tags>
   </entry>
   <entry>
