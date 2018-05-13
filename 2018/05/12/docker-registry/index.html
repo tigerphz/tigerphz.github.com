@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="tigerphz&#39;s Notes">
 <meta property="og:description" content="docker 版本每个版本配置可能不尽相同，我使用的docker是18.0312[22:27:38] hadoop:~ $ docker -vDocker version 18.03.0-ce, build 0520e24 下载docker registry镜像我们首先拉去docker registry私人仓库的docker镜像文件1[22:41:45] hadoop:~ $ sudo docke">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-12T15:22:41.497Z">
+<meta property="og:updated_time" content="2018-05-13T09:49:51.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker搭建私人仓库">
 <meta name="twitter:description" content="docker 版本每个版本配置可能不尽相同，我使用的docker是18.0312[22:27:38] hadoop:~ $ docker -vDocker version 18.03.0-ce, build 0520e24 下载docker registry镜像我们首先拉去docker registry私人仓库的docker镜像文件1[22:41:45] hadoop:~ $ sudo docke">
@@ -408,6 +408,7 @@
 <li>–restart=always 表示重启的策略，假如这个容器异常退出会自动重启容器；</li>
 <li>–name registry 进行重命名</li>
 </ul>
+<a id="more"></a>
 <h2 id="镜像仓库配置"><a href="#镜像仓库配置" class="headerlink" title="镜像仓库配置"></a>镜像仓库配置</h2><p>镜像仓库内镜像的命名规范：[registry-name]/[namespace]/[imagename]:[version]<br>为了解决https的报错需要配置daemon.json的insecure-registries，因为docker默认使用https协议，但是本地现在只支持http协议，配置insecure-registries：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[22:44:14] hadoop:~ $ sudo vim /etc/docker/daemon.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"registry-mirrors"</span>: [<span class="string">"配置自己的加速器地址如阿里云"</span>],</span><br><span class="line">   <span class="string">"insecure-registries"</span>: [</span><br><span class="line">      <span class="string">"192.168.164.133:5000"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>“registry-mirrors”: [“配置自己的加速器地址如阿里云”], 这语句如果不想配置可以去掉。<br>重新启动docker使得配置生效<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[23:07:30] hadoop:~ $ sudo systemctl restart docker</span><br></pre></td></tr></table></figure></p>
 <h2 id="测试上传"><a href="#测试上传" class="headerlink" title="测试上传"></a>测试上传</h2><p>我们先拉取一个镜像,然后修改名字使得符合命名规范<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[22:57:20] hadoop:~ $ sudo docker pull busybox</span><br><span class="line">[23:01:12] hadoop:~ $ sudo docker tag busybox 192.168.164.133:5000/penghuzi/busybox_test:v1.0</span><br></pre></td></tr></table></figure></p>
@@ -453,6 +454,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/13/linux-ubuntu-fsck/" rel="prev" title="linux-ubutnu服务器断电或异常重启,无法正常进入系统">
+                linux-ubutnu服务器断电或异常重启,无法正常进入系统 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -535,7 +540,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -546,7 +551,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -557,7 +562,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

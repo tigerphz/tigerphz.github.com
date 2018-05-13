@@ -296,6 +296,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/13/linux-ubuntu-fsck/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/13/linux-ubuntu-fsck/" itemprop="url">linux-ubutnu服务器断电或异常重启,无法正常进入系统</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-13T17:35:42+08:00">
+                2018-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux常见问题/" itemprop="url" rel="index">
+                    <span itemprop="name">linux常见问题</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/13/linux-ubuntu-fsck/" class="leancloud_visitors" data-flag-title="linux-ubutnu服务器断电或异常重启,无法正常进入系统">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>本人在两台ubuntu16.04的VM虚拟机上部署了rancher与k8s,运行一段时间后无法连接rancher容器，后尝试关闭重启容器也失败，只得重启服务器，然后服务器却无法正常进入登陆界面，如图：<br><img src="http://lc-gjllsjil.cn-n1.lcfile.com/9e2f4d9bb110e85ccda4.png" alt="img"><br>该界面提示了异常原因，应该是异常重启导致分区有问题，需要检测修复下分区。</p>
+<h2 id="fsck命令"><a href="#fsck命令" class="headerlink" title="fsck命令"></a>fsck命令</h2><p>运行fsck对有问题的分区进行修复，按照提示一路yes就可以<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ fsck -t ext4 /dev/mapper/hadoop--vg-root</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/13/linux-ubuntu-fsck/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/12/docker-registry/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -399,8 +557,7 @@
 
       
         
-          
-            <h2 id="docker-版本"><a href="#docker-版本" class="headerlink" title="docker 版本"></a>docker 版本</h2><p>每个版本配置可能不尽相同，我使用的docker是18.03<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[22:27:38] hadoop:~ $ docker -v</span><br><span class="line">Docker version 18.03.0-ce, build 0520e24</span><br></pre></td></tr></table></figure></p>
+          <h2 id="docker-版本"><a href="#docker-版本" class="headerlink" title="docker 版本"></a>docker 版本</h2><p>每个版本配置可能不尽相同，我使用的docker是18.03<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[22:27:38] hadoop:~ $ docker -v</span><br><span class="line">Docker version 18.03.0-ce, build 0520e24</span><br></pre></td></tr></table></figure></p>
 <h2 id="下载docker-registry镜像"><a href="#下载docker-registry镜像" class="headerlink" title="下载docker registry镜像"></a>下载docker registry镜像</h2><p>我们首先拉去docker registry私人仓库的docker镜像文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[22:41:45] hadoop:~ $ sudo docker pull registry</span><br></pre></td></tr></table></figure></p>
 <h2 id="运行registry容器"><a href="#运行registry容器" class="headerlink" title="运行registry容器"></a>运行registry容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[22:43:48] hadoop:~ $ sudo docker run -d -p 5000:5000 --name registry --restart=always -v /home/hadoop/docker_registry_data:/var/lib/registry registry</span><br></pre></td></tr></table></figure>
 <ul>
@@ -411,14 +568,13 @@
 <li>–restart=always 表示重启的策略，假如这个容器异常退出会自动重启容器；</li>
 <li>–name registry 进行重命名</li>
 </ul>
-<h2 id="镜像仓库配置"><a href="#镜像仓库配置" class="headerlink" title="镜像仓库配置"></a>镜像仓库配置</h2><p>镜像仓库内镜像的命名规范：[registry-name]/[namespace]/[imagename]:[version]<br>为了解决https的报错需要配置daemon.json的insecure-registries，因为docker默认使用https协议，但是本地现在只支持http协议，配置insecure-registries：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[22:44:14] hadoop:~ $ sudo vim /etc/docker/daemon.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"registry-mirrors"</span>: [<span class="string">"配置自己的加速器地址如阿里云"</span>],</span><br><span class="line">   <span class="string">"insecure-registries"</span>: [</span><br><span class="line">      <span class="string">"192.168.164.133:5000"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>“registry-mirrors”: [“配置自己的加速器地址如阿里云”], 这语句如果不想配置可以去掉。<br>重新启动docker使得配置生效<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[23:07:30] hadoop:~ $ sudo systemctl restart docker</span><br></pre></td></tr></table></figure></p>
-<h2 id="测试上传"><a href="#测试上传" class="headerlink" title="测试上传"></a>测试上传</h2><p>我们先拉取一个镜像,然后修改名字使得符合命名规范<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[22:57:20] hadoop:~ $ sudo docker pull busybox</span><br><span class="line">[23:01:12] hadoop:~ $ sudo docker tag busybox 192.168.164.133:5000/penghuzi/busybox_test:v1.0</span><br></pre></td></tr></table></figure></p>
-<p>192.168.164.133为自己私人仓库地址<br>测试上传该镜像到我们的私人仓库中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[22:25:19] hadoop:~ $ sudo docker push 192.168.164.133:5000/penghuzi/busybox_test:v1.0</span><br><span class="line">The push refers to repository [192.168.164.133:5000/penghuzi/busybox_test]</span><br><span class="line">0314be9edf00: Pushed</span><br><span class="line">v1.0: digest: sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd2 size: 527</span><br></pre></td></tr></table></figure></p>
-<p>查看私人仓库内镜像，以及指定镜像的tags<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[23:03:14] hadoop:~ $ curl 192.168.164.133:5000/v2/_catalog</span><br><span class="line">&#123;<span class="string">"repositories"</span>:[<span class="string">"penghuzi/busybox_test"</span>]&#125;</span><br><span class="line">[23:19:04] hadoop:~ $ curl 192.168.164.133:5000/v2/penghuzi/busybox_test/tags/list</span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"penghuzi/busybox_test"</span>,<span class="string">"tags"</span>:[<span class="string">"v1.0"</span>]&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="下载私人仓库内的镜像"><a href="#下载私人仓库内的镜像" class="headerlink" title="下载私人仓库内的镜像"></a>下载私人仓库内的镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[22:26:24] hadoop:~ $ sudo docker pull 192.168.164.133:5000/penghuzi/busybox_test:v1.0</span><br><span class="line">v1.0: Pulling from penghuzi/busybox_test</span><br><span class="line">Digest: sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd2</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> 192.168.164.133:5000/penghuzi/busybox_test:v1.0</span><br></pre></td></tr></table></figure>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/12/docker-registry/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1093,169 +1249,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/28/rabbitmq-distribution/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/28/rabbitmq-distribution/" itemprop="url">rabbitmq-分发机制</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-28T20:23:26+08:00">
-                2018-04-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/28/rabbitmq-distribution/" class="leancloud_visitors" data-flag-title="rabbitmq-分发机制">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一节的最后部分展示了一个基本的RabbitMQ发送接收的Hello World程序，Porducer发送消息，Consumer订阅队列接受消息然后打印消息，但是在实际应用场景中可能更加复杂些，如此简单的发送接受并不能满足实际需求，有可能Consumer端会有耗时计算等情况存在，所以RabbitMQ Server需要有一定的发送机制来平衡每个Consumer的负载，还有消息如何持久化，如何保证消息投递成功不丢失等</p>
-<h2 id="分发机制"><a href="#分发机制" class="headerlink" title="分发机制"></a>分发机制</h2><p>我们先模拟下Consumer进行耗时操作，看看消息是如何分发的<br>Producer：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line">user_pwd = pika.PlainCredentials(username=<span class="string">'admin'</span>, password=<span class="string">'123123'</span>)</span><br><span class="line"></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(</span><br><span class="line">    host=<span class="string">'172.16.200.122'</span>, port=<span class="string">'5672'</span>, credentials=user_pwd))</span><br><span class="line"></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line">channel.queue_declare(queue=<span class="string">'hello'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">8</span>):</span><br><span class="line">    message = <span class="string">'hello world '</span> + str(num)</span><br><span class="line">    channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'hello'</span>, body=message)</span><br><span class="line">    print(<span class="string">" [x] Sent %r"</span> % (message,))</span><br><span class="line"></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/28/rabbitmq-distribution/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1305,7 +1303,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1316,7 +1314,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1327,7 +1325,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

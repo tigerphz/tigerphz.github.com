@@ -82,7 +82,7 @@
 <meta name="description" content="哥在写寂寞">
 <meta property="og:type" content="website">
 <meta property="og:title" content="tigerphz&#39;s Notes">
-<meta property="og:url" content="http://tigerphz.com/categories/docker/index.html">
+<meta property="og:url" content="http://tigerphz.com/page/3/index.html">
 <meta property="og:site_name" content="tigerphz&#39;s Notes">
 <meta property="og:description" content="哥在写寂寞">
 <meta property="og:locale" content="zh-Hans">
@@ -118,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="http://tigerphz.com/categories/docker/"/>
+  <link rel="canonical" href="http://tigerphz.com/page/3/"/>
 
 
 
 
 
-  <title>分类: docker | tigerphz's Notes</title>
+  <title>tigerphz's Notes</title>
   
 
 
@@ -143,7 +143,8 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -280,139 +281,201 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
 
   
   
   
-  <div class="post-block category">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h2>docker<small>分类</small>
-        </h2>
-      </div>
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2017/12/11/docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/11/docker/" itemprop="url">Docker 安装</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T22:06:20+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/11/docker/" class="leancloud_visitors" data-flag-title="Docker 安装">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
 
       
         
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/12/docker-registry/" itemprop="url">
-              
-                <span itemprop="name">docker搭建私人仓库</span>
-              
+          <h2 id="Docker-版本简介"><a href="#Docker-版本简介" class="headerlink" title="Docker 版本简介"></a>Docker 版本简介</h2><p>  Docker是基于Go语言实现的开源容器项目，诞生于2013年初，最初发起者是dotCloud公司。Docker自开源后收到广泛的关注和讨论，逐渐形成了围绕Docker的生态圈，dotCloud公司后来改名Dockker Inc，专注于Docker相关的技术和产品。Docker的主要目标是’Build,Ship and Run Any App,Anywhere’，即通过对应用组件的封装、分发、不熟、运行等生命周期的管理，达到应用组件级别的“一次封装，到处运行”，Docker基于linux的多项开源技术提供高效、敏捷和轻量级的容器方案。<br>  目前Docker分为了两个版本Community Edition (CE) 和 Enterprise Edition (EE)社区版（CE）是免费的，面向开发者或者小团队使用的，用户可以选择stable(更新发布较慢) 和 edge(每个月都会发布新特性) 两个版本。<br>  企业版(EE)是付费使用的</p>
+<h3 id="社区版（CE）"><a href="#社区版（CE）" class="headerlink" title="社区版（CE）"></a>社区版（CE）</h3><p>  Docker CE是免费的Docker产品的新名字，是为开发人员或者小团队创建基于容器的应用，Docker CE有两个更新版本</p>
+<ul>
+<li>Stable 每季度发布，适用于希望追求稳定的用户，提供4个月支持</li>
+<li>Edge   每个月发布，主要面向喜欢尝试新功能的用户，提供一个月支持</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20170511214722040" alt=""></p>
+<h3 id="企业版-EE"><a href="#企业版-EE" class="headerlink" title="企业版(EE)"></a>企业版(EE)</h3><p>Docker EE是专门为企业的发展和IT团队创建的，Docker EE为企业提供最安全的容器平台，Docker EE提供三个服务层次：</p>
+<table>
+<thead>
+<tr>
+<th>服务层级</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td>包含用于认证基础设施的Docker平台Docker公司的支持经过 认证的、来自Docker    Store的容器与插件</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>添加高级镜像与容器管理LDAP/AD用户集成基于角色的访问控制(Docker Datacenter)</td>
+</tr>
+<tr>
+<td>Advanced</td>
+<td>添加Docker安全扫描连续漏洞监控</td>
+</tr>
+</tbody>
+</table>
+<p>每个Docker EE版本都享受为期一年的支持跟维护期，在此期间接受安全与关键问题修正。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/11/docker/#more" rel="contents">
+              阅读全文 &raquo;
             </a>
+          </div>
+          <!--/noindex-->
         
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-05-12T22:37:00+08:00"
-              content="2018-05-12" >
-          05-12
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2018/01/08/docker-elk-two/" itemprop="url">
-              
-                <span itemprop="name">elasticsearch 单机多实例部署</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-01-08T10:12:48+08:00"
-              content="2018-01-08" >
-          01-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2018/01/04/docker-elk-create/" itemprop="url">
-              
-                <span itemprop="name">docker下的elk环境搭建</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-01-04T20:04:41+08:00"
-              content="2018-01-04" >
-          01-04
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2017/12/11/docker/" itemprop="url">
-              
-                <span itemprop="name">Docker 安装</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-11T22:06:20+08:00"
-              content="2017-12-11" >
-          12-11
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
   
   
   
+  </article>
+
+
+    
+  </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
 
 
 

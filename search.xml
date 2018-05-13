@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[linux-ubutnu服务器断电或异常重启,无法正常进入系统]]></title>
+    <url>%2F2018%2F05%2F13%2Flinux-ubuntu-fsck%2F</url>
+    <content type="text"><![CDATA[问题描述本人在两台ubuntu16.04的VM虚拟机上部署了rancher与k8s,运行一段时间后无法连接rancher容器，后尝试关闭重启容器也失败，只得重启服务器，然后服务器却无法正常进入登陆界面，如图：该界面提示了异常原因，应该是异常重启导致分区有问题，需要检测修复下分区。 fsck命令运行fsck对有问题的分区进行修复，按照提示一路yes就可以1$ fsck -t ext4 /dev/mapper/hadoop--vg-root -t ext4 指定文件系统类型 /devmapper/hadoop–vg-root 要修复的分区路径，按照各自实际情况 提示完成后reboot 重启下服务器就可以了]]></content>
+      <categories>
+        <category>linux常见问题</category>
+      </categories>
+      <tags>
+        <tag>linux ubuntu fsck</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[docker搭建私人仓库]]></title>
     <url>%2F2018%2F05%2F12%2Fdocker-registry%2F</url>
     <content type="text"><![CDATA[docker 版本每个版本配置可能不尽相同，我使用的docker是18.0312[22:27:38] hadoop:~ $ docker -vDocker version 18.03.0-ce, build 0520e24 下载docker registry镜像我们首先拉去docker registry私人仓库的docker镜像文件1[22:41:45] hadoop:~ $ sudo docker pull registry 运行registry容器1[22:43:48] hadoop:~ $ sudo docker run -d -p 5000:5000 --name registry --restart=always -v /home/hadoop/docker_registry_data:/var/lib/registry registry -p 5000:5000 表示我们映射宿主机的5000端口到容器的5000端口，使得宿主机可以访问registry容器 -v /home/hadoop/docker_registry_data:/var/lib/registry 表示把宿主机的 /home/hadoop/docker_registry_data目录(根据个人情况修改)映射到容器的/var/lib/registry目录，使得registry上传的镜像文件能保存到宿主机的文件系统上。 –restart=always 表示重启的策略，假如这个容器异常退出会自动重启容器； –name registry 进行重命名 镜像仓库配置镜像仓库内镜像的命名规范：[registry-name]/[namespace]/[imagename]:[version]为了解决https的报错需要配置daemon.json的insecure-registries，因为docker默认使用https协议，但是本地现在只支持http协议，配置insecure-registries：1234567[22:44:14] hadoop:~ $ sudo vim /etc/docker/daemon.json&#123; "registry-mirrors": ["配置自己的加速器地址如阿里云"], "insecure-registries": [ "192.168.164.133:5000" ]&#125; “registry-mirrors”: [“配置自己的加速器地址如阿里云”], 这语句如果不想配置可以去掉。重新启动docker使得配置生效1[23:07:30] hadoop:~ $ sudo systemctl restart docker 测试上传我们先拉取一个镜像,然后修改名字使得符合命名规范12[22:57:20] hadoop:~ $ sudo docker pull busybox[23:01:12] hadoop:~ $ sudo docker tag busybox 192.168.164.133:5000/penghuzi/busybox_test:v1.0 192.168.164.133为自己私人仓库地址测试上传该镜像到我们的私人仓库中1234[22:25:19] hadoop:~ $ sudo docker push 192.168.164.133:5000/penghuzi/busybox_test:v1.0The push refers to repository [192.168.164.133:5000/penghuzi/busybox_test]0314be9edf00: Pushedv1.0: digest: sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd2 size: 527 查看私人仓库内镜像，以及指定镜像的tags1234[23:03:14] hadoop:~ $ curl 192.168.164.133:5000/v2/_catalog&#123;"repositories":["penghuzi/busybox_test"]&#125;[23:19:04] hadoop:~ $ curl 192.168.164.133:5000/v2/penghuzi/busybox_test/tags/list&#123;"name":"penghuzi/busybox_test","tags":["v1.0"]&#125; 下载私人仓库内的镜像1234[22:26:24] hadoop:~ $ sudo docker pull 192.168.164.133:5000/penghuzi/busybox_test:v1.0v1.0: Pulling from penghuzi/busybox_testDigest: sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd2Status: Downloaded newer image for 192.168.164.133:5000/penghuzi/busybox_test:v1.0]]></content>
