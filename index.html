@@ -296,6 +296,171 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/17/docker-redis-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tigerphz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/tiger.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tigerphz's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/17/docker-redis-install/" itemprop="url">docker安装redis带自定义配置</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-17T21:03:40+08:00">
+                2018-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/17/docker-redis-install/" class="leancloud_visitors" data-flag-title="docker安装redis带自定义配置">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="redis官方镜像"><a href="#redis官方镜像" class="headerlink" title="redis官方镜像"></a>redis官方镜像</h2><p>进入从官方的<a href="https://hub.docker.com/_/redis/" target="_blank" rel="noopener">redis镜像</a>页面，下面有内容教你如何使用镜像</p>
+<blockquote>
+<p>How to use this image<br>start a redis instance<br>$ docker run –name some-redis -d redis<br>This image includes EXPOSE 6379 (the redis port), so standard container linking will make it automatically available to the linked containers (as the following examples illustrate).</p>
+<p>start with persistent storage<br>$ docker run –name some-redis -d redis redis-server –appendonly yes<br>If persistence is enabled, data is stored in the VOLUME /data, which can be used with –volumes-from some-volume-container or -v /docker/host/dir:/data (see docs.docker volumes).</p>
+<p>For more about Redis Persistence, see <a href="http://redis.io/topics/persistence" target="_blank" rel="noopener">http://redis.io/topics/persistence</a>.</p>
+<p>connect to it from an application<br>$ docker run –name some-app –link some-redis:redis -d application-that-uses-redis<br>… or via redis-cli<br>$ docker run -it –link some-redis:redis –rm redis redis-cli -h redis -p 6379<br>Additionally, If you want to use your own redis.conf …<br>You can create your own Dockerfile that adds a redis.conf from the context into /data/, like so.</p>
+<p>FROM redis<br>COPY redis.conf /usr/local/etc/redis/redis.conf<br>CMD [ “redis-server”, “/usr/local/etc/redis/redis.conf” ]<br>Alternatively, you can specify something along the same lines with docker run options.</p>
+<p>$ docker run -v /myredis/conf/redis.conf:/usr/local/etc/redis/redis.conf –name myredis redis redis-server /usr/local/etc/redis/redis.conf<br>Where /myredis/conf/ is a local directory containing your redis.conf file. Using this method means that there is no need for you to have a Dockerfile for your redis container.</p>
+</blockquote>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/17/docker-redis-install/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/05/13/linux-ubuntu-fsck/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1089,166 +1254,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://tigerphz.com/2018/04/29/rabbitmq-ackdurable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tigerphz">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/tiger.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tigerphz's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/29/rabbitmq-ackdurable/" itemprop="url">rabbitmq-消息确认机制与持久化存储</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T12:46:05+08:00">
-                2018-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ入门/" itemprop="url" rel="index">
-                    <span itemprop="name">RabbitMQ入门</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/04/29/rabbitmq-ackdurable/" class="leancloud_visitors" data-flag-title="rabbitmq-消息确认机制与持久化存储">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="ACK-消息确认机制"><a href="#ACK-消息确认机制" class="headerlink" title="ACK 消息确认机制"></a>ACK 消息确认机制</h2><p>上一节我们介绍了RabbitMQ的分发机制有Round-robin（循环分发）与Fair dispatch（公平分发），其中的公平分发机制就必须使用到消息确认机制来保证RabbitMQ Server知道Consumer已经处理完成了任务，从而继续发送新任务给该Consumer处理，RabbitMQ Server没有使用超时机制，仅通过Consumer的连接是否中断，如果中断前还没有收到确认消息表示消息没有被成功处理。</p>
-<p>使用消息确认机制还能保证消息不丢失，Consumer成功处理消息后发送确认消息，RabbitMQ Server才会任务消息被成功处理，然后才会把消息标记为已完成从queue中删除，如果Consumer异常或者未发送确认消息，RabbitMQ则认为消息并没有成功被处理，后续会再发送给其他Consumer进行处理，直到收到对应的确认消息，这样就能保证消息不丢失，能被正真的处理。</p>
-<p>如果不使用确认机制，那么RabbitMQ Server 发送的消息Consumer接收以后，不管Consumer是否处理完成，直接把消息标记为完成从queue队列中删除。</p>
-<p>我们继续使用上面的公平分发里的Consumer代码来模拟一个处理过程中关闭程序，看下消息是否还保存再队列中，该代码里我们已经开启了手动消息确认机制(默认打开) ，然后回调函数的ch.basic_ack(delivery_tag=method.delivery_tag)这句代码表示确认消息。我们使用上一节开头提供的Producer代码发送一条消息，然后开启一个Consumer可以把休眠时间设置长一点10秒把，再任务未处理完成前关闭程序，然后到管理界面查看消息是否还存在。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/29/rabbitmq-ackdurable/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1303,7 +1308,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1325,7 +1330,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
